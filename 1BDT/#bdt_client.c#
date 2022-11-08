@@ -71,7 +71,7 @@ int main(void) {
   assert(BDT_insert("1root/2third") == CONFLICTING_PATH);
   assert(BDT_insert("1root/2no/3nay/4never") == CONFLICTING_PATH);
   assert(BDT_contains("1root") == TRUE);
-  assert(BDT_contains("1root/2child") == TRUE);
+  assnert(BDT_contains("1root/2child") == TRUE);
   assert(BDT_contains("1root/2second") == TRUE);
   assert(BDT_contains("1root/2third") == FALSE);
   assert(BDT_contains("1root/2no") == FALSE);
