@@ -10,13 +10,15 @@
 #include "dynarray.h"
 #include "path.h"
 
-
-
 /* see checkerDT.h for specification */
 boolean CheckerDT_Node_isValid(Node_T oNNode) {
    Node_T oNParent;
    Path_T oPNPath;
    Path_T oPPPath;
+   size_t* pulChildID;
+   size_t length;
+
+   oNParent = Node_getParent(oNNode);
 
    /* Sample check: a NULL pointer is not a valid node */
    if(oNNode == NULL) {
@@ -24,25 +26,69 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
       return FALSE;
    }
 
-   if (oNParent == NULL) {
-      if (Path_getStrLength(oPPPath) != 1) {
-         fprintf(stderr, "Root node does not have path length 1\n");
-         return FALSE;
-      }
-      if ()
+   /* a Node with a NULL path is not a valid Node */
+   oPNPath = Node_getPath(oNNode);
+   if (oPNPath == NULL) {
+      fprintf(stderr, "Path is NULL\n");
+      return FALSE;
    }
 
-   /* Sample check: parent's path must be the longest possible
-      proper prefix of the node's path */
-   oNParent = Node_getParent(oNNode);
+   else {
+      length = Path_getDepth(oPNPath);
+      if (length == 0) {
+         fprintf(stderr, "Path is not NULL, but length is 0\n");
+         return FALSE;
+      }
+      if (length == 1 && oNParent != NULL) {
+         fprintf(stderr, "Path length is 1, but oNParent of oNNode is not NULL\n");
+         return FALSE;
+      }
+      else if (length > 1 && oNParent == NULL) {
+         fprintf(stderr, "Path length is more than 1, but oNParent of oNNode is NULL\n");
+         return FALSE;
+      }
+   }
+
    if(oNParent != NULL) {
       oPNPath = Node_getPath(oNNode);
       oPPPath = Node_getPath(oNParent);
 
+      /* parent node must have children */
+      if (Node_getNumChildren(oNParent) < 1) {
+         fprintf(stderr, "Parent node does not have any children\n");
+         return FALSE;
+      }
+
+      /* parent node must contain child's path 
+      *pulChildID = 0;
+      if (!Node_hasChild(oNParent, oPNPath, pulChildID)) {
+         fprintf(stderr, "Parent node does not contain child's path\n");
+         return FALSE;
+      }
+      */
+
+      /* parent's path must be the longest possible
+      proper prefix of the node's path */
       if(Path_getSharedPrefixDepth(oPNPath, oPPPath) !=
          Path_getDepth(oPNPath) - 1) {
          fprintf(stderr, "P-C nodes don't have P-C paths: (%s) (%s)\n",
                  Path_getPathname(oPPPath), Path_getPathname(oPNPath));
+         return FALSE;
+      }
+
+      /* path must have length greater than 1 */
+      if (Path_getDepth(oPNPath) < 2) {
+         fprintf(stderr, "Path length is less than 2\n");
+         return FALSE;
+      }
+   }
+
+   else {
+      oPNPath = Node_getPath(oNNode);
+
+      /* path must have length of exactly 1 */
+      if (Path_getDepth(oPNPath) != 1) {
+         fprintf(stderr, "Root node does not have path length 1\n");
          return FALSE;
       }
    }
@@ -95,11 +141,54 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
 
    /* Sample check on a top-level data structure invariant:
       if the DT is not initialized, its count should be 0. */
-   if(!bIsInitialized)
+   /* bIsIntialized checks */
+   if(!bIsInitialized) {
       if(ulCount != 0) {
          fprintf(stderr, "Not initialized, but count is not 0\n");
          return FALSE;
       }
+      if(oNRoot != NULL) {
+         fprintf(stderr, "Not initialized, but root is not NULL\n");
+         return FALSE;
+      }
+   }
+
+   /* ulCount checks */
+   if (ulCount > 0) {
+      if (!bIsInitialized) {
+         fprintf(stderr, "Count is greater than 0, but tree is not initialized\n");
+         return FALSE;
+      }
+      if (oNRoot == NULL) {
+         fprintf(stderr, "Count is greater than 0, but root is NULL\n");
+         return FALSE;
+      }
+   }
+   else {
+      if (oNRoot != NULL) {
+         fprintf(stderr, "Count is 0, but root is not NULL\n");
+         return FALSE;
+      }
+   }
+
+   /* oNRoot checks */
+   if (oNRoot == NULL) {
+      if (ulCount > 0) {
+         fprintf(stderr, "Root is NULL, but root is greater than 0\n");
+         return FALSE;
+      }
+   }
+
+   else {
+      if (ulCount == 0) {
+         fprintf(stderr, "Root is not NULL, but count is 0\n");
+         return FALSE;
+      }
+      if (!bIsInitialized) {
+         fprintf(stderr, "Root is not NULL, but tree is not initialized\n");
+         return FALSE;
+      }
+   }
 
    /* Now checks invariants recursively at each node from the root. */
    return CheckerDT_treeCheck(oNRoot);
