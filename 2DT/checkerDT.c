@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------*/
 /* checkerDT.c                                                        */
-/* Author:                                                            */
+/* Author: Jacob Santelli and Joshua Yang                                                           */
 /*--------------------------------------------------------------------*/
 
 #include <assert.h>
@@ -22,6 +22,14 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    if(oNNode == NULL) {
       fprintf(stderr, "A node is a NULL pointer\n");
       return FALSE;
+   }
+
+   if (oNParent == NULL) {
+      if (Path_getStrLength(oPPPath) != 1) {
+         fprintf(stderr, "Root node does not have path length 1\n");
+         return FALSE;
+      }
+      if ()
    }
 
    /* Sample check: parent's path must be the longest possible

@@ -163,6 +163,7 @@ int main(void) {
   assert(DT_destroy() == SUCCESS);
   assert(DT_destroy() == INITIALIZATION_ERROR);
   assert(DT_contains("a") == FALSE);
+  fprintf(stderr, "reached here!");
   assert((temp = DT_toString()) == NULL);
 
   return 0;
