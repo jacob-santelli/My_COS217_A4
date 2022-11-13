@@ -15,8 +15,9 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    Node_T oNParent;
    Path_T oPNPath;
    Path_T oPPPath;
-   size_t* pulChildID;
    size_t length;
+   Node_T oNChild = NULL;
+   size_t i;
 
    oNParent = Node_getParent(oNNode);
 
@@ -59,14 +60,6 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
          return FALSE;
       }
 
-      /* parent node must contain child's path 
-      *pulChildID = 0;
-      if (!Node_hasChild(oNParent, oPNPath, pulChildID)) {
-         fprintf(stderr, "Parent node does not contain child's path\n");
-         return FALSE;
-      }
-      */
-
       /* parent's path must be the longest possible
       proper prefix of the node's path */
       if(Path_getSharedPrefixDepth(oPNPath, oPPPath) !=
@@ -93,6 +86,15 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
       }
    }
 
+   if (Node_getNumChildren(oNNode) > 0) {
+      for (i = 1; i < Node_getNumChildren(oNNode); i++) {
+         if (Node_getChild(oNNode, i - 1, &oNChild) != SUCCESS) {
+            fprintf(stderr, "something\n");
+            return FALSE;
+         }
+      }
+   }
+
    return TRUE;
 }
 
@@ -105,8 +107,12 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    parameter list to facilitate constructing your checks.
    If you do, you should update this function comment.
 */
-static boolean CheckerDT_treeCheck(Node_T oNNode) {
+static boolean CheckerDT_treeCheck(Node_T oNNode, boolean bIsInitialized, Node_T oNRoot, size_t ulCount) {
    size_t ulIndex;
+   size_t i;
+   size_t j;
+
+   DynArray_T nodeChildren = DynArray_new(0);
 
    if(oNNode!= NULL) {
 
@@ -114,6 +120,39 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
       /* If not, pass that failure back up immediately */
       if(!CheckerDT_Node_isValid(oNNode))
          return FALSE;
+
+      /* check: does current node have duplicate children? */
+      for(ulIndex = 0; ulIndex < Node_getNumChildren(oNNode); ulIndex++) {
+         Node_T oNChild = NULL;
+         int iStatus = Node_getChild(oNNode, ulIndex, &oNChild);
+         if(iStatus != SUCCESS) {
+            fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
+            return FALSE;
+         }
+
+         if (Path_getDepth(Node_getPath(oNChild)) != Path_getDepth(Node_getPath(oNNode)) + 1) {
+            fprintf(stderr, "Children have path length not equal to parent path length + 1\n");
+            return FALSE;
+         }
+
+         assert(DynArray_add(nodeChildren, oNChild));
+      }
+
+      for (i = 0; i < DynArray_getLength(nodeChildren); i++) {
+         for (j = i + 1; j < DynArray_getLength(nodeChildren); j++) {
+
+            if (Path_getDepth(Node_getPath(DynArray_get(nodeChildren, i))) !=
+             Path_getDepth(Node_getPath(DynArray_get(nodeChildren, j)))) {
+               fprintf(stderr, "Children have path length not equal to each other\n");
+               return FALSE;
+            }
+
+            if (Node_compare(DynArray_get(nodeChildren, i), DynArray_get(nodeChildren, j)) == 0) {
+               fprintf(stderr, "Current node has duplicate children\n");
+               return FALSE;
+            }
+         }
+      }
 
       /* Recur on every child of oNNode */
       for(ulIndex = 0; ulIndex < Node_getNumChildren(oNNode); ulIndex++)
@@ -128,7 +167,7 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
 
          /* if recurring down one subtree results in a failed check
             farther down, passes the failure back up immediately */
-         if(!CheckerDT_treeCheck(oNChild))
+         if(!CheckerDT_treeCheck(oNChild, bIsInitialized, oNRoot, ulCount))
             return FALSE;
       }
    }
@@ -191,5 +230,5 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
    }
 
    /* Now checks invariants recursively at each node from the root. */
-   return CheckerDT_treeCheck(oNRoot);
+   return CheckerDT_treeCheck(oNRoot, bIsInitialized, oNRoot, ulCount);
 }
