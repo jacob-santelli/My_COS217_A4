@@ -65,11 +65,14 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest) {
  
    /* set oPPrefix to the value of the root node, make sure that it returns success */
    iStatus = Path_prefix(oPPath, 1, &oPPrefix);
+
+   /* checks that there is a value in the root node */
    if(iStatus != SUCCESS) {
       *poNFurthest = NULL;
       return iStatus;
    }
 
+   
    if(Path_comparePath(Node_getPath(oNRoot), oPPrefix)) {
       Path_free(oPPrefix);
       *poNFurthest = NULL;
