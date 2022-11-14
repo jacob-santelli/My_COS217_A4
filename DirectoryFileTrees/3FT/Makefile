@@ -35,7 +35,7 @@ ft_client_copy.o: ft_client.c ft.h a4def.h
 checkerFT.o: checkerFT.c dynarray.h checkerFT.h nodeFT.h path.h a4def.h
 	$(GCC) -g -c $<
 
-nodeFTd.o: nodeFT.c dynarray.h checkerDT.h nodeFT.h path.h a4def.h
+nodeFT.o: nodeFT.c dynarray.h checkerDT.h nodeFT.h path.h a4def.h
 	$(GCC) -g -c $<
 
 ft.o: ft.c dynarray.h checkerFT.h nodeDT.h ft.h path.h a4def.h
