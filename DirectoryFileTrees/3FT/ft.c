@@ -344,8 +344,13 @@ int FT_insertFile(const char *pcPath, void *pvContents,
          return iStatus;
       }
 
-      /* insert the new node for this level */
-      iStatus = Node_new(oPPrefix, oNCurr, &oNNewNode);
+      /* insert the new node for this level, depending on whether it is the final file node */
+      if (Path_getDepth(oPPrefix) < ulDepth) {
+         iStatus = Node_new(oPPrefix, oNCurr, &oNNewNode, DIRECTORY);
+      }
+      else {
+         iStatus = Node_new(oPPrefix, oNCurr, &oNNewNode, FILE);
+      }
       if(iStatus != SUCCESS) {
          Path_free(oPPath);
          Path_free(oPPrefix);
