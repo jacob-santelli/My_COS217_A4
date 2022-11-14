@@ -76,7 +76,7 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, int state) {
    int iStatus;
 
    assert(oPPath != NULL);
-   assert(oNParent == NULL || CheckerDT_Node_isValid(oNParent));
+   /* assert(oNParent == NULL || CheckerDT_Node_isValid(oNParent)); */
 
    /* allocate space for a new node */
    psNew = malloc(sizeof(struct node));
@@ -163,8 +163,8 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, int state) {
 
    
 
-   assert(oNParent == NULL || CheckerDT_Node_isValid(oNParent));
-   assert(CheckerDT_Node_isValid(*poNResult));
+   /* assert(oNParent == NULL || CheckerDT_Node_isValid(oNParent)); */
+   /* assert(CheckerDT_Node_isValid(*poNResult)); */
 
    return SUCCESS;
 }
@@ -174,7 +174,7 @@ size_t Node_free(Node_T oNNode) {
    size_t ulCount = 0;
 
    assert(oNNode != NULL);
-   assert(CheckerDT_Node_isValid(oNNode));
+   /* assert(CheckerDT_Node_isValid(oNNode)); */
 
    /* remove from parent's list */
    if(oNNode->oNParent != NULL) {

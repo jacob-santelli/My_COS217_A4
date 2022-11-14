@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------*/
-/* ft.c                                                              */
-/* Authors: Jacob Santelli and Joshua Yang                             */
+/* ft.c                                                               */
+/* Authors: Jacob Santelli and Joshua Yang                            */
 /*--------------------------------------------------------------------*/
 
 #include <stddef.h>
@@ -233,7 +233,7 @@ int FT_insertDir(const char *pcPath) {
          Path_free(oPPath);
          if(oNFirstNew != NULL)
             (void) Node_free(oNFirstNew);
-         assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount));
+         /* _isValid(bIsInitialized, oNRoot, ulCount)); */
          return iStatus;
       }
 
@@ -244,7 +244,7 @@ int FT_insertDir(const char *pcPath) {
          Path_free(oPPrefix);
          if(oNFirstNew != NULL)
             (void) Node_free(oNFirstNew);
-         assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount));
+         /* assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount)); */
          return iStatus;
       }
 
@@ -387,11 +387,11 @@ int FT_rmFile(const char *pcPath) {
 }
 
 void *FT_getFileContents(const char *pcPath) {
+   return;
 }
 
 void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
                              size_t ulNewLength) {
-
 }
 
 int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
