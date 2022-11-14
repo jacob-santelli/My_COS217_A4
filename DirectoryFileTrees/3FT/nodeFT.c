@@ -21,7 +21,7 @@ struct node {
    /* the state of the node (either directory or file) */
    int state;
    /* void pointer to content */
-   const void* a_file;
+   void* a_file;
 };
 
 
@@ -270,4 +270,11 @@ char *Node_toString(Node_T oNNode) {
 
 int Node_getState(Node_T oNNode) {
    return oNNode->state;
+}
+
+void Node_setFile(Node_T oNNode, void* a_file) {
+   assert(oNNode != NULL);
+   assert(oNNode->state == A_FILE);
+
+   oNNode->a_file = a_file;
 }

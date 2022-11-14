@@ -88,4 +88,9 @@ char *Node_toString(Node_T oNNode);
 or file) */
 int Node_getState(Node_T oNNode);
 
+
+/* Take a node whose state is A_FILE and set the value of its file 
+pointer */
+void Node_setFile(Node_T oNNode, void* a_file);
+
 #endif
