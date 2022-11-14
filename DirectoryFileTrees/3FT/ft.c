@@ -30,14 +30,14 @@ static size_t ulCount;
 
 /* --------------------------------------------------------------------
 
-  The DT_traversePath and DT_findNode functions modularize the common
-  functionality of going as far as possible down an DT towards a path
+  The DF_traversePath and FT_findNode functions modularize the common
+  functionality of going as far as possible down an FT towards a path
   and returning either the node of however far was reached or the
   node if the full path was reached, respectively.
 */
 
 /*
-  Traverses the DT starting at the root as far as possible towards
+  Traverses the FT starting at the root as far as possible towards
   absolute path oPPath. If able to traverse, returns an int SUCCESS
   status and sets *poNFurthest to the furthest node reached (which may
   be only a prefix of oPPath, or even NULL if the root is NULL).
@@ -63,24 +63,24 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest) {
       return SUCCESS;
    }
  
-   /* set oPPrefix to the value of the root node, make sure that it returns success */
+   /*  ensure oNRoot matches oPPrefix */
    iStatus = Path_prefix(oPPath, 1, &oPPrefix);
-
-   /* checks that there is a value in the root node */
    if(iStatus != SUCCESS) {
       *poNFurthest = NULL;
       return iStatus;
    }
-
-   
-   if(Path_comparePath(Node_getPath(oNRoot), oPPrefix) ||
-   Node_getState(oNRoot) != 0) {
+   if(Path_comparePath(Node_getPath(oNRoot), oPPrefix)) {
       Path_free(oPPrefix);
       *poNFurthest = NULL;
       return CONFLICTING_PATH;
    }
    Path_free(oPPrefix);
    oPPrefix = NULL;
+
+   /* verify oNRoot is a directory, not a file */
+   if (Node_getState(oNRoot) != DIRECTORY) {
+      return CONFLICTING_PATH;
+   }
 
    oNCurr = oNRoot;
    ulDepth = Path_getDepth(oPPath);
@@ -114,10 +114,10 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest) {
 }
 
 /*
-  Traverses the DT to find a node with absolute path pcPath. Returns a
+  Traverses the FT to find a node with absolute path pcPath. Returns a
   int SUCCESS status and sets *poNResult to be the node, if found.
   Otherwise, sets *poNResult to NULL and returns with status:
-  * INITIALIZATION_ERROR if the DT is not in an initialized state
+  * INITIALIZATION_ERROR if the FT is not in an initialized state
   * BAD_PATH if pcPath does not represent a well-formatted path
   * CONFLICTING_PATH if the root's path is not a prefix of pcPath
   * NO_SUCH_PATH if no node with pcPath exists in the hierarchy
