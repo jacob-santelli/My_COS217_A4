@@ -281,7 +281,23 @@ boolean FT_containsDir(const char *pcPath) {
 
 
 int FT_rmDir(const char *pcPath) {
-    return 0;
+   int iStatus;
+   Node_T oNFound = NULL;
+
+   assert(pcPath != NULL);
+
+   /* call traverse path to find the last node in pcPath, and then check if that
+   is actually a directory */
+   iStatus = FT_traversePath(pcPath, &oNFound);
+
+   if(iStatus != SUCCESS)
+       return iStatus;
+
+   ulCount -= Node_free(oNFound);
+   if(ulCount == 0)
+      oNRoot = NULL;
+
+   return SUCCESS;
 }
 
 int FT_insertFile(const char *pcPath, void *pvContents,
