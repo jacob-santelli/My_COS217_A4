@@ -15,6 +15,9 @@ enum { SUCCESS,
        MEMORY_ERROR
 };
 
+/* Node states */
+enum { DIRECTORY, FILE };
+
 /* In lieu of a proper boolean datatype */
 enum bool { FALSE, TRUE };
 /* Make enumeration "feel" more like a builtin type */
