@@ -10,7 +10,7 @@
 #include "nodeFT.h"
 #include "checkerFT.h"
 
-/* A node in a DT */
+/* A node in a FT */
 struct node {
    /* the object corresponding to the node's absolute path */
    Path_T oPPath;
@@ -18,6 +18,8 @@ struct node {
    Node_T oNParent;
    /* the object containing links to this node's children */
    DynArray_T oDChildren;
+   /* the state of the node (either directory or file) */
+   const int state;
 };
 
 

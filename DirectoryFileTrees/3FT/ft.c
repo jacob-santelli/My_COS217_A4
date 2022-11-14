@@ -3,12 +3,37 @@
 /* Authors: Jacob Santelli and Joshua Yang                             */
 /*--------------------------------------------------------------------*/
 
+
+#include <stddef.h>
+#include <assert.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "dynarray.h"
+#include "path.h"
+#include "nodeFT.h"
+#include "checkerFT.h"
+#include "ft.h"
+
 /*
   A File Tree is a representation of a hierarchy of directories and
   files: the File Tree is rooted at a directory, directories
   may be internal nodes or leaves, and files are always leaves.
 */
 
+<<<<<<< HEAD
+=======
+/* 1. a flag for being in an initialized state (TRUE) or not (FALSE) */
+static boolean bIsInitialized;
+/* 2. a pointer to the root node in the hierarchy */
+static Node_T oNRoot;
+/* 3. a counter of the number of nodes in the hierarchy */
+static size_t ulCount;
+
+
+
+>>>>>>> 4881ea9a2ed5e0b7a50955e4b60701289ea518fe
 int FT_insertDir(const char *pcPath) { 
     int iStatus;
    Path_T oPPath = NULL;
