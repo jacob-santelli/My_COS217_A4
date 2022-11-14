@@ -52,7 +52,7 @@ int main(void) {
      return CONFLICTING_PATH.
   */
   assert(FT_insertDir("1root/2child/3gkid") == SUCCESS);
-  assert(FT_containsDir("1root/2child") == FALSE);
+  assert(FT_containsDir("1root/2child") == TRUE);
   assert(FT_insertFile("1root/2second/3gfile", NULL, 0) == SUCCESS);
   assert(FT_insertDir("1root/2child/3gkid") == ALREADY_IN_TREE);
   assert(FT_insertFile("1root/2child/3gkid", NULL, 0) ==
