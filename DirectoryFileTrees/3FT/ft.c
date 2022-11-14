@@ -44,9 +44,9 @@ static size_t ulCount;
   Otherwise, sets *poNFurthest to NULL and returns with status:
   * CONFLICTING_PATH if the root's path is not a prefix of oPPath
   * MEMORY_ERROR if memory could not be allocated to complete request
-  * FILE_IN_PATH if path contains a file anywhere instead of a directory 
+  * NOT_A_DIRECTORY if path contains a file anywhere instead of a directory 
 */
-static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest) {
+static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, bool checkFilesInPath) {
    int iStatus;
    Path_T oPPrefix = NULL;
    Node_T oNCurr;
@@ -98,7 +98,7 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest) {
             *poNFurthest = NULL;
             return iStatus;
          }
-         if (Node_getState(oNChild) != DIRECTORY) {
+         if (checkFilesInPath == TRUE && Node_getState(oNChild) != DIRECTORY) {
             return NOT_A_DIRECTORY;
          }
          oNCurr = oNChild;
@@ -144,7 +144,7 @@ static int FT_findNode(const char *pcPath, Node_T *poNResult) {
       return iStatus;
    }
 
-   iStatus = FT_traversePath(oPPath, &oNFound);
+   iStatus = FT_traversePath(oPPath, &oNFound, 0);
    if(iStatus != SUCCESS)
    {
       Path_free(oPPath);
@@ -189,7 +189,7 @@ int FT_insertDir(const char *pcPath) {
       return iStatus;
 
    /* find the closest ancestor of oPPath already in the tree */
-   iStatus= FT_traversePath(oPPath, &oNCurr);
+   iStatus= FT_traversePath(oPPath, &oNCurr, TRUE);
    if(iStatus != SUCCESS)
    {
       Path_free(oPPath);
@@ -266,11 +266,17 @@ int FT_insertDir(const char *pcPath) {
    return SUCCESS;
 }
 
-
-
-
 boolean FT_containsDir(const char *pcPath) {
-    return FALSE;
+   int iStatus;
+   Node_T oNFound = NULL;
+
+   assert(pcPath != NULL);
+
+   iStatus = FT_traversePath(pcPath, &oNFound);
+   if (Node_getState(oNFound) == DIRECTORY) {
+      return (boolean) (iStatus == SUCCESS);
+   }
+   return FALSE;
 }
 
 
