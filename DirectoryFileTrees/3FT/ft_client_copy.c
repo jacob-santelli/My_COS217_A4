@@ -54,13 +54,14 @@ int main(void) {
   assert(FT_insertDir("1root/2child/3gkid") == SUCCESS);
   assert(FT_containsDir("1root/2child") == TRUE);
   assert(FT_insertFile("1root/2second/3gfile", NULL, 0) == SUCCESS);
-  assert(FT_containsFile("1root/2child/3gfile") == TRUE);
+  assert(FT_containsFile("1root/2second/3gfile") == TRUE);
   assert(FT_insertDir("1root/2child/3gkid") == ALREADY_IN_TREE);
   assert(FT_insertFile("1root/2child/3gkid", NULL, 0) ==
          ALREADY_IN_TREE);
   assert(FT_insertDir("1otherroot") == CONFLICTING_PATH);
   assert(FT_insertDir("1otherroot/2d") == CONFLICTING_PATH);
   assert(FT_insertFile("1otherroot/2f", NULL, 0) == CONFLICTING_PATH);
+  assert(FT_rmDir("1root/2child") == SUCCESS);
 
   /* Trying to insert a third child should succeed, unlike in BDT */
   assert(FT_insertFile("1root/2third", NULL, 0) == SUCCESS);
