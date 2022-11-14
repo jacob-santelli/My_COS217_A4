@@ -394,7 +394,17 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
 }
 
 int FT_init(void) {
-    return 0;
+   /* assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount)); */
+
+   if(bIsInitialized)
+      return INITIALIZATION_ERROR;
+
+   bIsInitialized = TRUE;
+   oNRoot = NULL;
+   ulCount = 0;
+
+   /* assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount)); */
+   return SUCCESS;
 }
 
 int FT_destroy(void) {
