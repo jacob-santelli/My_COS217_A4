@@ -270,10 +270,12 @@ int FT_insertDir(const char *pcPath) {
 boolean FT_containsDir(const char *pcPath) {
    int iStatus;
    Node_T oNFound = NULL;
+   Path_T oPPath = NULL;
 
    assert(pcPath != NULL);
+   assert(Path_new(pcPath, &oPPath) == SUCCESS);
 
-   iStatus = FT_traversePath(pcPath, &oNFound, FALSE);
+   iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
    if (Node_getState(oNFound) == DIRECTORY) {
       return (boolean) (iStatus == SUCCESS);
    }
@@ -284,12 +286,14 @@ boolean FT_containsDir(const char *pcPath) {
 int FT_rmDir(const char *pcPath) {
    int iStatus;
    Node_T oNFound = NULL;
+   Path_T oPPath = NULL;
 
    assert(pcPath != NULL);
+   assert(Path_new(pcPath, &oPPath) == SUCCESS);
 
    /* call traverse path to find the last node in pcPath, and then check if that
    is actually a directory */
-   iStatus = FT_traversePath(pcPath, &oNFound, FALSE);
+   iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
 
    if(iStatus != SUCCESS)
        return iStatus;
@@ -412,12 +416,14 @@ boolean FT_containsFile(const char *pcPath) {
 int FT_rmFile(const char *pcPath) {
    int iStatus;
    Node_T oNFound = NULL;
+   Path_T oPPath = NULL;
 
    assert(pcPath != NULL);
+   assert(Path_new(pcPath, &oPPath) == SUCCESS);
 
    /* call traverse path to find the last node in pcPath, and then check if that
    is actually a directory */
-   iStatus = FT_traversePath(pcPath, &oNFound, FALSE);
+   iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
 
    if(iStatus != SUCCESS)
        return iStatus;
