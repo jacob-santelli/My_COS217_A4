@@ -144,7 +144,7 @@ static int FT_findNode(const char *pcPath, Node_T *poNResult) {
       return iStatus;
    }
 
-   iStatus = DT_traversePath(oPPath, &oNFound);
+   iStatus = FT_traversePath(oPPath, &oNFound);
    if(iStatus != SUCCESS)
    {
       Path_free(oPPath);
