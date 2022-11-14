@@ -14,6 +14,7 @@
 #include "nodeFT.h"
 #include "checkerFT.h"
 #include "ft.h"
+#include "a4def.h"
 
 /*
   A File Tree is a representation of a hierarchy of directories and
@@ -46,7 +47,7 @@ static size_t ulCount;
   * MEMORY_ERROR if memory could not be allocated to complete request
   * NOT_A_DIRECTORY if path contains a file anywhere instead of a directory 
 */
-static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, bool checkFilesInPath) {
+static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, enum bool checkFilesInPath) {
    int iStatus;
    Path_T oPPrefix = NULL;
    Node_T oNCurr;
@@ -272,7 +273,7 @@ boolean FT_containsDir(const char *pcPath) {
 
    assert(pcPath != NULL);
 
-   iStatus = FT_traversePath(pcPath, &oNFound);
+   iStatus = FT_traversePath(pcPath, &oNFound, FALSE);
    if (Node_getState(oNFound) == DIRECTORY) {
       return (boolean) (iStatus == SUCCESS);
    }
@@ -288,7 +289,7 @@ int FT_rmDir(const char *pcPath) {
 
    /* call traverse path to find the last node in pcPath, and then check if that
    is actually a directory */
-   iStatus = FT_traversePath(pcPath, &oNFound);
+   iStatus = FT_traversePath(pcPath, &oNFound, FALSE);
 
    if(iStatus != SUCCESS)
        return iStatus;
@@ -320,7 +321,7 @@ int FT_insertFile(const char *pcPath, void *pvContents,
       return iStatus;
 
    /* find the closest ancestor of oPPath already in the tree */
-   iStatus= FT_traversePath(oPPath, &oNCurr);
+   iStatus= FT_traversePath(oPPath, &oNCurr, TRUE);
    if(iStatus != SUCCESS)
    {
       Path_free(oPPath);
