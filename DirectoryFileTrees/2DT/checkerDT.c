@@ -1,13 +1,12 @@
 /*--------------------------------------------------------------------*/
 /* checkerDT.c                                                        */
-/* Author: Jacob Santelli and Joshua Yang                                                           */
+/* Author: Jacob Santelli and Joshua Yang                             */
 /*--------------------------------------------------------------------*/
 
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <assert.h>
 #include "checkerDT.h"
 #include "dynarray.h"
 #include "path.h"
@@ -50,11 +49,13 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
          return FALSE;
       }
       if (length == 1 && oNParent != NULL) {
-         fprintf(stderr, "Path length is 1, but oNParent of oNNode is not NULL\n");
+         fprintf(stderr,
+                 "Path length is 1, but oNParent is not NULL\n");
          return FALSE;
       }
       else if (length > 1 && oNParent == NULL) {
-         fprintf(stderr, "Path length is more than 1, but oNParent of oNNode is NULL\n");
+         fprintf(stderr,
+                 "Path length is more than 1, but oNParent is NULL\n");
          return FALSE;
       }
    }
@@ -103,13 +104,16 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
 
       /* getNumChildren should equal number of children the node has */
       if(Node_getChild(oNNode, ulIndex, &oNChild) != SUCCESS) {
-         fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
+         fprintf(stderr,
+                 "getNumChildren not equal to what getChild returns\n");
          return FALSE;
       }
 
       /* child path length should equal parent path length + 1 */
-      if (Path_getDepth(Node_getPath(oNChild)) != Path_getDepth(Node_getPath(oNNode)) + 1) {
-         fprintf(stderr, "Children have path length not equal to parent path length + 1\n");
+      if (Path_getDepth(Node_getPath(oNChild)) !=
+          Path_getDepth(Node_getPath(oNNode)) + 1) {
+         fprintf(stderr,
+               "Child path length not equal to parent path length+1\n");
          return FALSE;
       }
 
@@ -119,12 +123,14 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    if (DynArray_getLength(nodeChildren) > 1) {
       for (i = 0; i <  DynArray_getLength(nodeChildren) - 1; i++) {
          j = i + 1;
-         comp = Path_comparePath(Node_getPath(DynArray_get(nodeChildren, i)), 
+         comp = Path_comparePath(
+            Node_getPath(DynArray_get(nodeChildren, i)), 
                   Node_getPath(DynArray_get(nodeChildren, j)));
 
-         /* checks if current node children are in lexicographic order */
+         /* checks if current node children in lexicographic order */
          if (comp > 0) {
-            fprintf(stderr, "Children of node not in lexicographic order\n");
+            fprintf(stderr,
+                    "Children of node not in lexicographic order\n");
             return FALSE;
          }
 
@@ -146,7 +152,8 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    root node and stores result in ulCountCheck, comparing it
    to ulCount to verify. 
 */
-static boolean CheckerDT_treeCheck(Node_T oNNode, size_t ulCount, size_t* ulCountCheck) {
+static boolean CheckerDT_treeCheck(
+   Node_T oNNode, size_t ulCount, size_t* ulCountCheck) {
    size_t ulIndex;
 
    assert(ulCountCheck);
@@ -165,7 +172,8 @@ static boolean CheckerDT_treeCheck(Node_T oNNode, size_t ulCount, size_t* ulCoun
          int iStatus = Node_getChild(oNNode, ulIndex, &oNChild);
 
          if(iStatus != SUCCESS) {
-            fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
+            fprintf(stderr,
+                 "getNumChildren not equal to what getChild returns\n");
             return FALSE;
          }
 
@@ -175,8 +183,8 @@ static boolean CheckerDT_treeCheck(Node_T oNNode, size_t ulCount, size_t* ulCoun
             return FALSE;
       }
 
-      /* ulCountCheck independently counts number of nodes reachable from root
-         to verify ulCount is accurate */
+      /* ulCountCheck independently counts number of nodes reachable 
+         from root to verify ulCount is accurate */
       (*ulCountCheck)++;
    }
    return TRUE;
@@ -186,8 +194,8 @@ static boolean CheckerDT_treeCheck(Node_T oNNode, size_t ulCount, size_t* ulCoun
 boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
                           size_t ulCount) {
 
-   /* ulCountCheck independently counts number of nodes reachable from root
-      to verify ulCount is accurate */
+   /* ulCountCheck independently counts number of nodes reachable from
+      root to verify ulCount is accurate */
    size_t* ulCountCheck = malloc(sizeof(size_t*));
    assert(ulCountCheck);
    *ulCountCheck = 0;
@@ -207,7 +215,8 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
    /* ulCount checks */
    if (ulCount > 0) {
       if (!bIsInitialized) {
-         fprintf(stderr, "Count is greater than 0, but tree is not initialized\n");
+         fprintf(stderr,
+                 "Count greater than 0, but tree is not initialized\n");
          return FALSE;
       }
       if (oNRoot == NULL) {
@@ -236,7 +245,8 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
          return FALSE;
       }
       if (!bIsInitialized) {
-         fprintf(stderr, "Root is not NULL, but tree is not initialized\n");
+         fprintf(stderr,
+                 "Root is not NULL, but tree is not initialized\n");
          return FALSE;
       }
    }
@@ -246,7 +256,8 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
 
    /* verify ulCountCheck == ulCount */
    if (ulCount != *ulCountCheck) {
-      fprintf(stderr, "ulCount does not match number of nodes reachable from root\n");
+      fprintf(stderr,
+              "ulCount doesn't match # of nodes reachable from root\n");
       free(ulCountCheck);
       return FALSE;
    }

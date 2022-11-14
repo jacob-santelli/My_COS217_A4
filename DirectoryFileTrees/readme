@@ -137,6 +137,41 @@ the error manifests itself or is "noticed" by the client.
 What are your critiques of the given DT implementations, as
 specified in Step 2.5?
 
+nodeDT.h/nodeDTGood.c:
+
+The parameter order for Node_new() is such that Path_T oPPath is the
+first parameter and Node_T oNParent is the second parameter, but in
+Node_hasChild(), which also takes these two paramters, the opposite is
+true. The parameter order should be consistent in the functions.
+
+In the descriptions of Node_hasChild() and Node_getChild(), it's not
+made clear how *pulChildID and ulChildID actually work, even though
+it's very important for the client to know that the ulChildID is an
+index between 0 and the total num of children, not just some random
+hash, for example. Stating the specifics (at least the bounds) of
+ulChildID would be helpful to add in the comments here.
+
+There's a typo in the comment for Node_getParent() that leads to
+confusion.
+
+The two functions Node_getChild() and Node_hasChild() are largely
+redundant and could be consolidated to avoid module bloat. For example,
+you could call (void) Node_getChild() instead of Node_hasChild().
+
+For Node_getParent() and Node_getPath(), the function comment should
+be explicit about who is in charge of allocating memory and who owns
+the memory after the function terminates. (See Node_toString(), which
+comments on this correctly.)
+
+dt.h/dtGood.c:
+
+DT_rm should have more internal function comments, just like DT_insert
+does. This would make it easier for a developer to debug DT_rm. The same
+applies for functions like DT_toString(), DT_traversePath(), etc.
+
+The static functions DT_traversePath() and DT_findNode() are largely
+redundant and contribute to module bloat. These two functions could
+be refactored into a single function.
 
 
 ------------------------------------------------------------------------
