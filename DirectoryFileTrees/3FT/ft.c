@@ -451,7 +451,18 @@ int FT_rmFile(const char *pcPath) {
 }
 
 void *FT_getFileContents(const char *pcPath) {
-   return;
+   int iStatus;
+   Node_T oNFound = NULL;
+   Path_T oPPath = NULL;
+
+   assert(pcPath != NULL);
+   assert(Path_new(pcPath, &oPPath) == SUCCESS);
+
+   iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
+   if (Node_getState(oNFound) != A_FILE) {
+      return NULL;
+   }
+   return Node_getFile(oNFound);
 }
 
 void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
