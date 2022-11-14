@@ -288,10 +288,14 @@ int FT_rmDir(const char *pcPath) {
 
    /* call traverse path to find the last node in pcPath, and then check if that
    is actually a directory */
-   iStatus = FT_traversePath(pcPath, &oNFound);
+   iStatus = FT_traversePath(pcPath, &oNFound, FALSE);
 
    if(iStatus != SUCCESS)
        return iStatus;
+
+   if (Node_getState(oNFound) != DIRECTORY) {
+      return NOT_A_DIRECTORY;
+   }
 
    ulCount -= Node_free(oNFound);
    if(ulCount == 0)
@@ -405,7 +409,27 @@ boolean FT_containsFile(const char *pcPath) {
 }
 
 int FT_rmFile(const char *pcPath) {
-    return 0;
+   int iStatus;
+   Node_T oNFound = NULL;
+
+   assert(pcPath != NULL);
+
+   /* call traverse path to find the last node in pcPath, and then check if that
+   is actually a directory */
+   iStatus = FT_traversePath(pcPath, &oNFound, FALSE);
+
+   if(iStatus != SUCCESS)
+       return iStatus;
+
+   if (Node_getState(oNFound) != A_FILE) {
+      return NOT_A_DIRECTORY;
+   }
+
+   ulCount -= Node_free(oNFound);
+   if(ulCount == 0)
+      oNRoot = NULL;
+
+   return SUCCESS;
 }
 
 void *FT_getFileContents(const char *pcPath) {
