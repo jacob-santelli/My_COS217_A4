@@ -30,14 +30,14 @@ static size_t ulCount;
 
 /* --------------------------------------------------------------------
 
-  The DF_traversePath and FT_findNode functions modularize the common
-  functionality of going as far as possible down an FT towards a path
+  The DT_traversePath and DT_findNode functions modularize the common
+  functionality of going as far as possible down an DT towards a path
   and returning either the node of however far was reached or the
   node if the full path was reached, respectively.
 */
 
 /*
-  Traverses the FT starting at the root as far as possible towards
+  Traverses the DT starting at the root as far as possible towards
   absolute path oPPath. If able to traverse, returns an int SUCCESS
   status and sets *poNFurthest to the furthest node reached (which may
   be only a prefix of oPPath, or even NULL if the root is NULL).
@@ -63,24 +63,23 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest) {
       return SUCCESS;
    }
  
-   /*  ensure oNRoot matches oPPrefix */
+   /* set oPPrefix to the value of the root node, make sure that it returns success */
    iStatus = Path_prefix(oPPath, 1, &oPPrefix);
+
+   /* checks that there is a value in the root node */
    if(iStatus != SUCCESS) {
       *poNFurthest = NULL;
       return iStatus;
    }
-   if(Path_comparePath(Node_getPath(oNRoot), oPPrefix)) {
+
+   if(Path_comparePath(Node_getPath(oNRoot), oPPrefix) ||
+   Node_getState(oNRoot) != 0) {
       Path_free(oPPrefix);
       *poNFurthest = NULL;
       return CONFLICTING_PATH;
    }
    Path_free(oPPrefix);
    oPPrefix = NULL;
-
-   /* verify oNRoot is a directory, not a file */
-   if (Node_getState(oNRoot) != DIRECTORY) {
-      return CONFLICTING_PATH;
-   }
 
    oNCurr = oNRoot;
    ulDepth = Path_getDepth(oPPath);
@@ -114,10 +113,10 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest) {
 }
 
 /*
-  Traverses the FT to find a node with absolute path pcPath. Returns a
+  Traverses the DT to find a node with absolute path pcPath. Returns a
   int SUCCESS status and sets *poNResult to be the node, if found.
   Otherwise, sets *poNResult to NULL and returns with status:
-  * INITIALIZATION_ERROR if the FT is not in an initialized state
+  * INITIALIZATION_ERROR if the DT is not in an initialized state
   * BAD_PATH if pcPath does not represent a well-formatted path
   * CONFLICTING_PATH if the root's path is not a prefix of pcPath
   * NO_SUCH_PATH if no node with pcPath exists in the hierarchy
@@ -169,7 +168,7 @@ static int FT_findNode(const char *pcPath, Node_T *poNResult) {
 /*--------------------------------------------------------------------*/
 
 int FT_insertDir(const char *pcPath) { 
-    int iStatus;
+   int iStatus;
    Path_T oPPath = NULL;
    Node_T oNFirstNew = NULL;
    Node_T oNCurr = NULL;
@@ -177,7 +176,6 @@ int FT_insertDir(const char *pcPath) {
    size_t ulNewNodes = 0;
 
    assert(pcPath != NULL);
-   assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount));
 
    /* validate pcPath and generate a Path_T for it */
    if(!bIsInitialized)
@@ -188,7 +186,7 @@ int FT_insertDir(const char *pcPath) {
       return iStatus;
 
    /* find the closest ancestor of oPPath already in the tree */
-   iStatus= DT_traversePath(oPPath, &oNCurr);
+   iStatus= FT_traversePath(oPPath, &oNCurr);
    if(iStatus != SUCCESS)
    {
       Path_free(oPPath);
@@ -203,12 +201,15 @@ int FT_insertDir(const char *pcPath) {
    }
 
    ulDepth = Path_getDepth(oPPath);
-   if(oNCurr == NULL) /* new root! */
+   /* only possible if root is in fact NULL, in which case the first
+   Node is being added to the tree */
+   if(oNCurr == NULL)
       ulIndex = 1;
    else {
       ulIndex = Path_getDepth(Node_getPath(oNCurr))+1;
 
-      /* oNCurr is the node we're trying to insert */
+      /* oNCurr is the node with the longest shared prefix with the
+      path that we are trying to insert */
       if(ulIndex == ulDepth+1 && !Path_comparePath(oPPath,
                                        Node_getPath(oNCurr))) {
          Path_free(oPPath);
@@ -257,7 +258,6 @@ int FT_insertDir(const char *pcPath) {
       oNRoot = oNFirstNew;
    ulCount += ulNewNodes;
 
-   assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount));
    return SUCCESS;
 }
 
