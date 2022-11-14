@@ -262,3 +262,7 @@ char *Node_toString(Node_T oNNode) {
    else
       return strcpy(copyPath, Path_getPathname(Node_getPath(oNNode)));
 }
+
+int Node_getState(Node_T oNNode) {
+   return oNNode->state;
+}

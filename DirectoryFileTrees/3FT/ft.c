@@ -73,7 +73,8 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest) {
    }
 
    
-   if(Path_comparePath(Node_getPath(oNRoot), oPPrefix)) {
+   if(Path_comparePath(Node_getPath(oNRoot), oPPrefix) ||
+   Node_getState(oNRoot) != 0) {
       Path_free(oPPrefix);
       *poNFurthest = NULL;
       return CONFLICTING_PATH;
