@@ -20,6 +20,8 @@ struct node {
    DynArray_T oDChildren;
    /* the state of the node (either directory or file) */
    int state;
+   /* void pointer to content */
+   const void* a_file;
 };
 
 
