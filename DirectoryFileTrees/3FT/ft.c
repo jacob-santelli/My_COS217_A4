@@ -349,7 +349,7 @@ int FT_insertFile(const char *pcPath, void *pvContents,
          iStatus = Node_new(oPPrefix, oNCurr, &oNNewNode, DIRECTORY);
       }
       else {
-         iStatus = Node_new(oPPrefix, oNCurr, &oNNewNode, FILE);
+         iStatus = Node_new(oPPrefix, oNCurr, &oNNewNode, A_FILE);
       }
       if(iStatus != SUCCESS) {
          Path_free(oPPath);
