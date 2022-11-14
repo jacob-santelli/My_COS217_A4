@@ -19,7 +19,7 @@ struct node {
    /* the object containing links to this node's children */
    DynArray_T oDChildren;
    /* the state of the node (either directory or file) */
-   const int state;
+   int state;
 };
 
 
@@ -65,7 +65,7 @@ static int Node_compareString(const Node_T oNFirst,
                  or oNParent is NULL but oPPath is not of depth 1
   * ALREADY_IN_TREE if oNParent already has a child with this path
 */
-int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult) {
+int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, int state) {
    struct node *psNew;
    Path_T oPParentPath = NULL;
    Path_T oPNewPath = NULL;
@@ -91,6 +91,7 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult) {
       return iStatus;
    }
    psNew->oPPath = oPNewPath;
+   psNew->state = state;
 
    /* validate and set the new node's parent */
    if(oNParent != NULL) {
@@ -157,6 +158,8 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult) {
    }
 
    *poNResult = psNew;
+
+   
 
    assert(oNParent == NULL || CheckerDT_Node_isValid(oNParent));
    assert(CheckerDT_Node_isValid(*poNResult));
