@@ -84,6 +84,8 @@ int Node_compare(Node_T oNFirst, Node_T oNSecond);
 */
 char *Node_toString(Node_T oNNode);
 
+/* Takes any Node and returns its state (which can either be firectory
+or file) */
 int Node_getState(Node_T oNNode);
 
 #endif
