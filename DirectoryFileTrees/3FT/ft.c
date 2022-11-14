@@ -99,7 +99,7 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest) {
             return iStatus;
          }
          if (Node_getState(oNChild) != DIRECTORY) {
-            return FILE_IN_PATH;
+            return NOT_A_DIRECTORY;
          }
          oNCurr = oNChild;
       }
