@@ -3,7 +3,6 @@
 /* Authors: Jacob Santelli and Joshua Yang                             */
 /*--------------------------------------------------------------------*/
 
-
 #include <stddef.h>
 #include <assert.h>
 #include <string.h>
@@ -163,7 +162,6 @@ static int DT_findNode(const char *pcPath, Node_T *poNResult) {
    return SUCCESS;
 }
 /*--------------------------------------------------------------------*/
-
 
 int FT_insertDir(const char *pcPath) { 
     int iStatus;
