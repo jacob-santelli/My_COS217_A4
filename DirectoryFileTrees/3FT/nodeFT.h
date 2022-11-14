@@ -84,4 +84,6 @@ int Node_compare(Node_T oNFirst, Node_T oNSecond);
 */
 char *Node_toString(Node_T oNNode);
 
+int Node_getState(Node_T oNNode);
+
 #endif
