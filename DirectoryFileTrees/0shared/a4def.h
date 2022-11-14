@@ -16,7 +16,7 @@ enum { SUCCESS,
 };
 
 /* Node states */
-enum { DIRECTORY, FILE };
+enum { DIRECTORY, A_FILE };
 
 /* In lieu of a proper boolean datatype */
 enum bool { FALSE, TRUE };
