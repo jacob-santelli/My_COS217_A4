@@ -507,7 +507,7 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
       return iStatus;
    }
 
-   /* checks for conflicting path using traverse and check for no such path */
+   /* checks for no such path and conflicting path */
    iStatus = FT_traversePath(oPPath, &oNFound, 0);
    if (iStatus == CONFLICTING_PATH) return CONFLICTING_PATH;
    if(oNFound == NULL) {
@@ -563,6 +563,7 @@ int FT_destroy(void) {
    /* assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount)); */
    return SUCCESS;
 }
+
 /* --------------------------------------------------------------------
 
   The following auxiliary functions are used for generating the
@@ -587,7 +588,7 @@ static size_t FT_preOrderTraversal(Node_T n, DynArray_T d, size_t i) {
          Node_T oNChild = NULL;
          iStatus = Node_getChild(n,c, &oNChild);
          assert(iStatus == SUCCESS);
-         i = DT_preOrderTraversal(oNChild, d, i);
+         i = FT_preOrderTraversal(oNChild, d, i);
       }
    }
    return i;
