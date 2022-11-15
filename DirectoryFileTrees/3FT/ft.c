@@ -278,6 +278,9 @@ boolean FT_containsDir(const char *pcPath) {
    if (!bIsInitialized)
       return FALSE;
 
+   if (oNRoot == NULL)
+      return FALSE;
+
    iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
    if (iStatus != SUCCESS)
       return FALSE;
@@ -296,6 +299,12 @@ int FT_rmDir(const char *pcPath) {
 
    assert(pcPath != NULL);
    assert(Path_new(pcPath, &oPPath) == SUCCESS);
+
+   if (!bIsInitialized)
+      return INITIALIZATION_ERROR;
+
+   if (oNRoot == NULL)
+      return FALSE;
 
    /* call traverse path to find the last node in pcPath, and then check if that
    is actually a directory */
@@ -423,10 +432,13 @@ boolean FT_containsFile(const char *pcPath) {
    assert(pcPath != NULL);
    assert(Path_new(pcPath, &oPPath) == SUCCESS);
 
-   if (!bIsInitialized) return FALSE;
+   if (!bIsInitialized)
+      return FALSE;
+
+   if (oNRoot == NULL)
+      return FALSE;
 
    iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
-   if (iStatus != SUCCESS) return FALSE;
    if (Node_getState(oNFound) == A_FILE) {
       return (boolean) (iStatus == SUCCESS);
    }
@@ -440,6 +452,12 @@ int FT_rmFile(const char *pcPath) {
 
    assert(pcPath != NULL);
    assert(Path_new(pcPath, &oPPath) == SUCCESS);
+
+   if (!bIsInitialized)
+      return INITIALIZATION_ERROR;
+
+   if (oNRoot == NULL)
+      return FALSE;
 
    /* call traverse path to find the last node in pcPath, and then check if that
    is actually a directory */
@@ -467,6 +485,9 @@ void *FT_getFileContents(const char *pcPath) {
    assert(pcPath != NULL);
    assert(Path_new(pcPath, &oPPath) == SUCCESS);
 
+   if (!bIsInitialized)
+      return NULL;
+
    iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
    if (Node_getState(oNFound) != A_FILE) {
       return NULL;
@@ -484,6 +505,9 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
 
    assert(pcPath != NULL);
    assert(Path_new(pcPath, &oPPath) == SUCCESS);
+
+   if (!bIsInitialized)
+      return NULL;
 
    iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
    if (Node_getState(oNFound) != A_FILE) {
@@ -592,6 +616,9 @@ static size_t FT_preOrderTraversal(Node_T n, DynArray_T d, size_t i) {
 
    assert(d != NULL);
 
+   count = 0;
+   temp = DynArray_new(1);
+
    if(n != NULL) {
       (void) DynArray_set(d, i, n);
       i++;
@@ -601,11 +628,11 @@ static size_t FT_preOrderTraversal(Node_T n, DynArray_T d, size_t i) {
          iStatus = Node_getChild(n,c, &oNChild);
 
          if (Node_getState(oNChild) == A_FILE) {
-            DynArray_set(d, i, DynArray_get(temp, j));
+            DynArray_add(d, DynArray_get(temp, j));
             i++;
          }
          else {
-            DynArray_set(temp,count, oNChild);
+            (void) DynArray_add(temp, oNChild);
             count++;
          }
          assert(iStatus == SUCCESS);
