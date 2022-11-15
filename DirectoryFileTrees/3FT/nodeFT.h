@@ -93,4 +93,6 @@ int Node_getState(Node_T oNNode);
 pointer */
 void Node_setFile(Node_T oNNode, void* a_file);
 
+/* returns the pointer to the file contained in oNNode */
+void* Node_getFile(Node_T oNNode);
 #endif

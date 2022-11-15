@@ -278,3 +278,10 @@ void Node_setFile(Node_T oNNode, void* a_file) {
 
    oNNode->a_file = a_file;
 }
+
+void* Node_getFile(Node_T oNNode) {
+   assert(oNNode != NULL);
+   assert(oNNode->state == A_FILE);
+
+   return oNNode->a_file;
+}
