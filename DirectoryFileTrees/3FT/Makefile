@@ -18,9 +18,9 @@ clean:
 	rm -f $(TARGETS) meminfo*.out
 
 clobber: clean
-	rm -f dynarray.o path.o ft_client_copy.o checkerFT.o nodeFT.o ft.o *~
+	rm -f dynarray.o path.o ft_client.o checkerFT.o nodeFT.o ft.o *~
 
-ft: dynarray.o path.o checkerFT.o nodeFT.o ft.o ft_client_copy.o
+ft: dynarray.o path.o checkerFT.o nodeFT.o ft.o ft_client.o
 	$(GCC) -g $^ -o $@
 
 dynarray.o: dynarray.c dynarray.h
@@ -29,7 +29,7 @@ dynarray.o: dynarray.c dynarray.h
 path.o: path.c path.h
 	$(GCC) -g -c $<
 
-ft_client_copy.o: ft_client_copy.c ft.h a4def.h
+ft_client.o: ft_client.c ft.h a4def.h
 	$(GCC) -g -c $<
 
 checkerFT.o: checkerFT.c dynarray.h checkerFT.h nodeFT.h path.h a4def.h
