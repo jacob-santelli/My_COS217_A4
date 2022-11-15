@@ -282,6 +282,7 @@ boolean FT_containsDir(const char *pcPath) {
    return FALSE;
 }
 
+
 int FT_rmDir(const char *pcPath) {
    int iStatus;
    Node_T oNFound = NULL;
@@ -296,10 +297,6 @@ int FT_rmDir(const char *pcPath) {
 
    if(iStatus != SUCCESS)
        return iStatus;
-
-   if (Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
-      return NO_SUCH_PATH;
-   }
 
    if (Node_getState(oNFound) != DIRECTORY) {
       return NOT_A_DIRECTORY;
@@ -442,10 +439,6 @@ int FT_rmFile(const char *pcPath) {
    if(iStatus != SUCCESS)
        return iStatus;
 
-   if (Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
-      return NO_SUCH_PATH;
-   }
-
    if (Node_getState(oNFound) != A_FILE) {
       return NOT_A_DIRECTORY;
    }
@@ -526,6 +519,7 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
       return NO_SUCH_PATH;
    }
 
+   /* change booleans depending on if node is directory or Node */
    if (Node_getState(oNFound) == DIRECTORY) {
       *pbIsFile = FALSE;
    }
