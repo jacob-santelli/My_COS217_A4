@@ -577,6 +577,9 @@ int FT_destroy(void) {
 */
 static size_t FT_preOrderTraversal(Node_T n, DynArray_T d, size_t i) {
    size_t c;
+   size_t count;
+   size_t j;
+   DynArray_T temp;
 
    assert(d != NULL);
 
@@ -587,8 +590,20 @@ static size_t FT_preOrderTraversal(Node_T n, DynArray_T d, size_t i) {
          int iStatus;
          Node_T oNChild = NULL;
          iStatus = Node_getChild(n,c, &oNChild);
+
+         if (Node_getState(oNChild) == A_FILE) {
+            DynArray_set(d, i, DynArray_get(temp, j));
+            i++;
+         }
+         else {
+            DynArray_set(temp,count, oNChild);
+            count++;
+         }
          assert(iStatus == SUCCESS);
-         i = FT_preOrderTraversal(oNChild, d, i);
+      }
+      for (j = 0; i< DynArray_getLength(temp); j++) {
+         DynArray_set(d, i, DynArray_get(temp, j));
+         i = FT_preOrderTraversal(DynArray_get(temp, j), d, i);
       }
    }
    return i;
