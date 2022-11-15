@@ -423,7 +423,10 @@ boolean FT_containsFile(const char *pcPath) {
    assert(pcPath != NULL);
    assert(Path_new(pcPath, &oPPath) == SUCCESS);
 
+   if (!bIsInitialized) return FALSE;
+
    iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
+   if (iStatus != SUCCESS) return FALSE;
    if (Node_getState(oNFound) == A_FILE) {
       return (boolean) (iStatus == SUCCESS);
    }
