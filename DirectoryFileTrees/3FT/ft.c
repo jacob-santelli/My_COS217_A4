@@ -497,7 +497,46 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
 }
 
 int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
-    return 0;
+   int iStatus;
+   Path_T oPPath = NULL;
+   Node_T oNFound = NULL;
+   void *pvTemp;
+
+   assert(pcPath != NULL);
+
+   /* checks for initialization error */
+   if(!bIsInitialized) return INITIALIZATION_ERROR;
+
+   /* checks for memory error and bad path */
+   iStatus = Path_new(pcPath, &oPPath);
+   if(iStatus != SUCCESS) {
+      Path_free(oPPath);
+      return iStatus;
+   }
+
+   /* checks for no such path and conflicting path */
+   iStatus = FT_traversePath(oPPath, &oNFound, 0);
+   if (iStatus == CONFLICTING_PATH) return CONFLICTING_PATH;
+   if(oNFound == NULL) {
+      Path_free(oPPath);
+      return NO_SUCH_PATH;
+   }
+   if(Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
+      Path_free(oPPath);
+      return NO_SUCH_PATH;
+   }
+
+   if (Node_getState(oNFound) == DIRECTORY) {
+      *pbIsFile = FALSE;
+   }
+   else {
+      *pbIsFile = TRUE;
+      pvTemp = Node_getFile(oNFound);
+      *pulSize = sizeof(*pvTemp);
+   }
+
+   Path_free(oPPath);
+   return SUCCESS;
 }
 
 int FT_init(void) {
