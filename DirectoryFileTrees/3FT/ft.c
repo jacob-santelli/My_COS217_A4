@@ -507,7 +507,7 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
       return iStatus;
    }
 
-   /* checks for no such path and conflicting path */
+   /* checks for conflicting path using traverse and check for no such path */
    iStatus = FT_traversePath(oPPath, &oNFound, 0);
    if (iStatus == CONFLICTING_PATH) return CONFLICTING_PATH;
    if(oNFound == NULL) {
