@@ -467,6 +467,26 @@ void *FT_getFileContents(const char *pcPath) {
 
 void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
                              size_t ulNewLength) {
+   int iStatus;
+   Node_T oNFound = NULL;
+   Path_T oPPath = NULL;
+   void *pvTempOne;
+   void *pvTempTwo;
+
+   assert(pcPath != NULL);
+   assert(Path_new(pcPath, &oPPath) == SUCCESS);
+
+   iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
+   if (Node_getState(oNFound) != A_FILE) {
+      return NULL;
+   }
+   pvNewContents = malloc(ulNewLength);
+   if (pvNewContents == NULL) return NULL;
+
+   pvTempOne = Node_getFile(oNFound);
+   Node_setFile(oNFound,pvNewContents);
+
+   return pvTempOne;
 }
 
 int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
