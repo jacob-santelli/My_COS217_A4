@@ -276,6 +276,10 @@ boolean FT_containsDir(const char *pcPath) {
    assert(Path_new(pcPath, &oPPath) == SUCCESS);
 
    iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
+   
+   if (iStatus != SUCCESS)
+      return FALSE;
+      
    if (Node_getState(oNFound) == DIRECTORY) {
       return (boolean) (iStatus == SUCCESS);
    }
