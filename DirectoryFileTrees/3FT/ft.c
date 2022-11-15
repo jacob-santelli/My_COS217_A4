@@ -439,6 +439,9 @@ boolean FT_containsFile(const char *pcPath) {
       return FALSE;
 
    iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
+   if (iStatus != SUCCESS)
+      return FALSE;
+
    if (Node_getState(oNFound) == A_FILE) {
       return (boolean) (iStatus == SUCCESS);
    }
@@ -632,10 +635,9 @@ static void FT_preOrderTraversal(DynArray_T d, Node_T n) {
          else {
             (void) DynArray_add(temp, oNChild);
          }
-         assert(iStatus == SUCCESS);
+         /* assert(iStatus == SUCCESS); */
       }
       for (j = 0; j< DynArray_getLength(temp); j++) {
-         (void) DynArray_add(d, DynArray_get(temp, j));
          (void) FT_preOrderTraversal(d, DynArray_get(temp, j));
       }
    }
