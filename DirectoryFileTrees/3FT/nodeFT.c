@@ -269,6 +269,7 @@ char *Node_toString(Node_T oNNode) {
 }
 
 int Node_getState(Node_T oNNode) {
+   assert(oNNode != NULL);
    return oNNode->state;
 }
 
