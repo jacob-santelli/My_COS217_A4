@@ -608,7 +608,7 @@ int FT_destroy(void) {
   inserting each payload to DynArray_T d beginning at index i.
   Returns the next unused index in d after the insertion(s).
 */
-static size_t FT_preOrderTraversal(Node_T n, DynArray_T d, size_t i) {
+static void FT_preOrderTraversal(DynArray_T d, Node_T n) {
    size_t c;
    size_t count;
    size_t j;
@@ -620,29 +620,25 @@ static size_t FT_preOrderTraversal(Node_T n, DynArray_T d, size_t i) {
    temp = DynArray_new(1);
 
    if(n != NULL) {
-      (void) DynArray_set(d, i, n);
-      i++;
+      (void) DynArray_add(d, n);
       for(c = 0; c < Node_getNumChildren(n); c++) {
          int iStatus;
          Node_T oNChild = NULL;
          iStatus = Node_getChild(n,c, &oNChild);
 
          if (Node_getState(oNChild) == A_FILE) {
-            DynArray_add(d, DynArray_get(temp, j));
-            i++;
+            (void) DynArray_add(d, oNChild);
          }
          else {
             (void) DynArray_add(temp, oNChild);
-            count++;
          }
          assert(iStatus == SUCCESS);
       }
-      for (j = 0; i< DynArray_getLength(temp); j++) {
-         DynArray_set(d, i, DynArray_get(temp, j));
-         i = FT_preOrderTraversal(DynArray_get(temp, j), d, i);
+      for (j = 0; j< DynArray_getLength(temp); j++) {
+         (void) DynArray_add(d, DynArray_get(temp, j));
+         (void) FT_preOrderTraversal(d, DynArray_get(temp, j));
       }
    }
-   return i;
 }
 
 /*
@@ -681,7 +677,7 @@ char *FT_toString(void) {
       return NULL;
 
    nodes = DynArray_new(ulCount);
-   (void) FT_preOrderTraversal(oNRoot, nodes, 0);
+   (void) FT_preOrderTraversal(nodes, oNRoot);
 
    DynArray_map(nodes, (void (*)(void *, void*)) FT_strlenAccumulate,
                 (void*) &totalStrlen);
