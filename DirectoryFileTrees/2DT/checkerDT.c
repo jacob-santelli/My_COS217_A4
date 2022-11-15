@@ -156,7 +156,7 @@ static boolean CheckerDT_treeCheck(
    Node_T oNNode, size_t ulCount, size_t* ulCountCheck) {
    size_t ulIndex;
 
-   assert(ulCountCheck);
+   assert(ulCountCheck != NULL);
 
    if(oNNode!= NULL) {
 
@@ -197,7 +197,7 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
    /* ulCountCheck independently counts number of nodes reachable from
       root to verify ulCount is accurate */
    size_t* ulCountCheck = malloc(sizeof(size_t*));
-   assert(ulCountCheck);
+   assert(ulCountCheck != NULL);
    *ulCountCheck = 0;
 
    /* bIsIntialized checks */

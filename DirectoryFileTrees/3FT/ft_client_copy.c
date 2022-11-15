@@ -61,8 +61,6 @@ int main(void) {
    assert(FT_insertDir("1otherroot") == CONFLICTING_PATH);
    assert(FT_insertDir("1otherroot/2d") == CONFLICTING_PATH);
    assert(FT_insertFile("1otherroot/2f", NULL, 0) == CONFLICTING_PATH);
-   assert(FT_rmDir("1root/2child") == SUCCESS);
-   assert(FT_rmDir("1root/2child") != SUCCESS);
 
    /* Trying to insert a third child should succeed, unlike in BDT */
    assert(FT_insertFile("1root/2third", NULL, 0) == SUCCESS);

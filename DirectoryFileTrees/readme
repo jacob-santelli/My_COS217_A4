@@ -173,5 +173,11 @@ The static functions DT_traversePath() and DT_findNode() are largely
 redundant and contribute to module bloat. These two functions could
 be refactored into a single function.
 
+Also, in general, it's not ideal to have the enum for SUCCESS be
+set to 0; if a user wants to assert some function that returns
+SUCCESS, simply calling assert(Node_someFunc()) will actually cause
+the assert to fail even though Node_someFunc() returns SUCCESS because
+the integer value of SUCCESS is 0, i.e. false in c. In short, this leads
+to user confusion and frequent bugs. 
 
 ------------------------------------------------------------------------
