@@ -541,8 +541,6 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
       Path_free(oPPath);
       return NULL;
    }
-   pvNewContents = malloc(ulNewLength);
-   if (pvNewContents == NULL) return NULL;
 
    pvTempOne = Node_getFile(oNFound);
    Node_setFile(oNFound, pvNewContents);
