@@ -84,22 +84,21 @@ int Node_compare(Node_T oNFirst, Node_T oNSecond);
 */
 char *Node_toString(Node_T oNNode);
 
-/* Takes any Node and returns its state (which can either be firectory
-or file) */
+/* Takes any Node and returns its state (which can either be directory
+or file). */
 int Node_getState(Node_T oNNode);
 
-
-/* Take a node whose state is A_FILE and set the value of its file 
-pointer */
+/* Takes a file node and set the value of its file 
+pointer. */
 void Node_setFile(Node_T oNNode, void* a_file);
 
-/* returns the pointer to the file contained in oNNode */
+/* Returns a pointer to oNNode's file. */
 void* Node_getFile(Node_T oNNode);
 
-/* Take a node whose state is A_FILE and set its length to ulLength */
+/* Takes a file node and sets its length to ulLength. */
 void Node_setFileLength(Node_T oNNode, size_t ulLength);
 
-/* returns the length of the file contained in oNNode */
+/* Returns the length of oNnode's file. */
 size_t Node_getFileLength(Node_T oNNode);
 
 #endif
