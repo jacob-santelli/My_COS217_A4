@@ -176,7 +176,7 @@ size_t Node_free(Node_T oNNode) {
    }
    DynArray_free(oNNode->oDChildren);
 
-   /* remove path */
+   /* free path */
    Path_free(oNNode->oPPath);
 
    /* finally, free the struct node */
@@ -197,7 +197,6 @@ boolean Node_hasChild(Node_T oNParent, Path_T oPPath,
    assert(oPPath != NULL);
    assert(pulChildID != NULL);
 
-   /* *pulChildID is the index into oNParent->oDChildren */
    return DynArray_bsearch(oNParent->oDChildren,
             (char*) Path_getPathname(oPPath), pulChildID,
             (int (*)(const void*,const void*)) Node_compareString);
@@ -209,13 +208,11 @@ size_t Node_getNumChildren(Node_T oNParent) {
    return DynArray_getLength(oNParent->oDChildren);
 }
 
-int  Node_getChild(Node_T oNParent, size_t ulChildID,
+int Node_getChild(Node_T oNParent, size_t ulChildID,
                    Node_T *poNResult) {
-
    assert(oNParent != NULL);
    assert(poNResult != NULL);
 
-   /* ulChildID is the index into oNParent->oDChildren */
    if(ulChildID >= Node_getNumChildren(oNParent)) {
       *poNResult = NULL;
       return NO_SUCH_PATH;
