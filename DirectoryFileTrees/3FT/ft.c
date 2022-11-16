@@ -67,6 +67,7 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, enum bool checkFi
       return iStatus;
    }
 
+   /* checks that the given path exists under the root node */
    if(Path_comparePath(Node_getPath(oNRoot), oPPrefix)) {
       Path_free(oPPrefix);
       *poNFurthest = NULL;
@@ -75,6 +76,7 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, enum bool checkFi
    Path_free(oPPrefix);
    oPPrefix = NULL;
 
+   /* iterates down the given path */
    oNCurr = oNRoot;
    ulDepth = Path_getDepth(oPPath);
    for(i = 2; i <= ulDepth; i++) {
