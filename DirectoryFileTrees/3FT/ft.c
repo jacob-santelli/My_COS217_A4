@@ -570,6 +570,7 @@ static void FT_preOrderTraversal(DynArray_T d, Node_T n) {
    size_t count;
    size_t j;
    DynArray_T temp;
+   int iStatus;
 
    assert(d != NULL);
 
@@ -579,7 +580,6 @@ static void FT_preOrderTraversal(DynArray_T d, Node_T n) {
    if(n != NULL) {
       (void) DynArray_add(d, n);
       for(c = 0; c < Node_getNumChildren(n); c++) {
-         int iStatus;
          Node_T oNChild = NULL;
          iStatus = Node_getChild(n,c, &oNChild);
 
