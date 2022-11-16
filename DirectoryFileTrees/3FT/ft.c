@@ -446,7 +446,7 @@ boolean FT_containsFile(const char *pcPath) {
    if (iStatus != SUCCESS)
       return FALSE;
 
-   if (Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
+   if (oNFound == NULL || Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
       return FALSE;
 
    if (Node_getState(oNFound) == A_FILE) {
@@ -564,7 +564,7 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
       Path_free(oPPath);
       return NO_SUCH_PATH;
    }
-   if(Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
+   if(oNFound == NULL || Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
       Path_free(oPPath);
       return NO_SUCH_PATH;
    }
