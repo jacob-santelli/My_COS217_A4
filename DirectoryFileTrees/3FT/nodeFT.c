@@ -297,7 +297,7 @@ void Node_setFileLength(Node_T oNNode, size_t ulLength) {
    oNNode->size_of_file = ulLength;
 }
 
-size_t Node_getFileLength(Node_T oNNode, size_t ulLength) {
+size_t Node_getFileLength(Node_T oNNode) {
    assert(oNNode != NULL);
    assert(oNNode->state == A_FILE);
 

@@ -100,6 +100,6 @@ void* Node_getFile(Node_T oNNode);
 void Node_setFileLength(Node_T oNNode, size_t ulLength);
 
 /* returns the length of the file contained in oNNode */
-size_t Node_getFileLength(Node_T oNNode, size_t ulLength);
+size_t Node_getFileLength(Node_T oNNode);
 
 #endif
