@@ -167,17 +167,14 @@ int FT_insertDir(const char *pcPath) {
    while(ulIndex <= ulDepth) {
       Path_T oPPrefix = NULL;
       Node_T oNNewNode = NULL;
-
       /* generate a Path_T for this level */
       iStatus = Path_prefix(oPPath, ulIndex, &oPPrefix);
       if(iStatus != SUCCESS) {
          Path_free(oPPath);
          if(oNFirstNew != NULL)
             (void) Node_free(oNFirstNew);
-         /* _isValid(bIsInitialized, oNRoot, ulCount)); */
          return iStatus;
       }
-
       /* insert the new node for this level */
       iStatus = Node_new(oPPrefix, oNCurr, &oNNewNode, DIRECTORY);
       if(iStatus != SUCCESS) {
@@ -185,10 +182,8 @@ int FT_insertDir(const char *pcPath) {
          Path_free(oPPrefix);
          if(oNFirstNew != NULL)
             (void) Node_free(oNFirstNew);
-         /* assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount)); */
          return iStatus;
       }
-
       /* set up for next level */
       Path_free(oPPrefix);
       oNCurr = oNNewNode;
@@ -524,7 +519,6 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
 }
 
 int FT_init(void) {
-   /* assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount)); */
 
    if(bIsInitialized)
       return INITIALIZATION_ERROR;
@@ -533,13 +527,10 @@ int FT_init(void) {
    oNRoot = NULL;
    ulCount = 0;
 
-   /* assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount)); */
    return SUCCESS;
 }
 
 int FT_destroy(void) {
-   /* assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount)); */
-
    if(!bIsInitialized)
       return INITIALIZATION_ERROR;
 
@@ -550,7 +541,6 @@ int FT_destroy(void) {
 
    bIsInitialized = FALSE;
 
-   /* assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount)); */
    return SUCCESS;
 }
 
