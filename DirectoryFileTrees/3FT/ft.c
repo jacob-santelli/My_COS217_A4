@@ -12,7 +12,6 @@
 #include "dynarray.h"
 #include "path.h"
 #include "nodeFT.h"
-#include "checkerFT.h"
 #include "ft.h"
 #include "a4def.h"
 
@@ -502,10 +501,10 @@ void *FT_getFileContents(const char *pcPath) {
    iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
 
    if(iStatus != SUCCESS)
-       return iStatus;
+       return NULL;
 
    if (oNFound == NULL || Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
-      return NO_SUCH_PATH;
+      return NULL;
 
    if (Node_getState(oNFound) != A_FILE) {
       return NULL;
@@ -519,7 +518,6 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
    Node_T oNFound = NULL;
    Path_T oPPath = NULL;
    void *pvTempOne;
-   void *pvTempTwo;
 
    assert(pcPath != NULL);
    assert(Path_new(pcPath, &oPPath) == SUCCESS);
@@ -553,7 +551,6 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
    int iStatus;
    Path_T oPPath = NULL;
    Node_T oNFound = NULL;
-   void *pvTemp;
 
    assert(pcPath != NULL);
 
@@ -575,15 +572,12 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
       return NO_SUCH_PATH;
    }
 
-
-
    /* change booleans depending on if node is directory or Node */
    if (Node_getState(oNFound) == DIRECTORY) {
       *pbIsFile = FALSE;
    }
    else {
       *pbIsFile = TRUE;
-      pvTemp = Node_getFile(oNFound);
       *pulSize = Node_getFileLength(oNFound);
    }
 

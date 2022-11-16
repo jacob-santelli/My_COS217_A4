@@ -8,7 +8,6 @@
 #include <string.h>
 #include "dynarray.h"
 #include "nodeFT.h"
-#include "checkerFT.h"
 
 /* A node in a FT */
 struct node {
