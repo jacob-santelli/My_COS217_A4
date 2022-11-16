@@ -528,14 +528,25 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
       return NULL;
 
    iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
+   if (iStatus != SUCCESS) {
+      Path_free(oPPath);
+      return NULL;
+   }
+   if(oNFound == NULL || Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
+      Path_free(oPPath);
+      return NULL;
+   }
+
    if (Node_getState(oNFound) != A_FILE) {
+      Path_free(oPPath);
       return NULL;
    }
    pvNewContents = malloc(ulNewLength);
    if (pvNewContents == NULL) return NULL;
 
    pvTempOne = Node_getFile(oNFound);
-   Node_setFile(oNFound,pvNewContents);
+   Node_setFile(oNFound, pvNewContents);
+   Node_setFileLength(oNFound, ulNewLength);
 
    return pvTempOne;
 }
@@ -561,10 +572,6 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
    /* checks for no such path and conflicting path */
    iStatus = FT_traversePath(oPPath, &oNFound, 0);
    if (iStatus == CONFLICTING_PATH) return CONFLICTING_PATH;
-   if(oNFound == NULL) {
-      Path_free(oPPath);
-      return NO_SUCH_PATH;
-   }
    if(oNFound == NULL || Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
       Path_free(oPPath);
       return NO_SUCH_PATH;
