@@ -55,6 +55,18 @@ static int Node_compareString(const Node_T oNFirst,
    return Path_compareString(oNFirst->oPPath, pcSecond);
 }
 
+/*
+  Compares oNFirst and oNSecond lexicographically based on their paths.
+  Returns <0, 0, or >0 if onFirst is "less than", "equal to", or
+  "greater than" oNSecond, respectively.
+*/
+static int Node_compare(Node_T oNFirst, Node_T oNSecond) {
+   assert(oNFirst != NULL);
+   assert(oNSecond != NULL);
+
+   return Path_comparePath(oNFirst->oPPath, oNSecond->oPPath);
+}
+
 int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, int state) {
    struct node *psNew;
    Path_T oPParentPath = NULL;
@@ -151,7 +163,7 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, int state) {
    return SUCCESS;
 }
 
-static size_t Node_free(Node_T oNNode) {
+size_t Node_free(Node_T oNNode) {
    size_t ulIndex = 0;
    size_t ulCount = 0;
 
@@ -226,13 +238,6 @@ Node_T Node_getParent(Node_T oNNode) {
    assert(oNNode != NULL);
 
    return oNNode->oNParent;
-}
-
-int Node_compare(Node_T oNFirst, Node_T oNSecond) {
-   assert(oNFirst != NULL);
-   assert(oNSecond != NULL);
-
-   return Path_comparePath(oNFirst->oPPath, oNSecond->oPPath);
 }
 
 char *Node_toString(Node_T oNNode) {
