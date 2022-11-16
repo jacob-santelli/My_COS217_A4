@@ -26,7 +26,7 @@ information given in the "Policies" web page (also available on armlab
 in the file ~cos217/AuthorizedSourcesList ) to this section of the
 readme file, and edit it as appropriate.
 
-
+Lecture slides and recordings, precepts.
 
 ------------------------------------------------------------------------
 Student 1: What unauthorized sources of information did you use to
@@ -54,7 +54,7 @@ nature of the interaction, may additionally require the interaction
 being reported to the Committee on Discipline. Write "None" if you used
 no unauthorized sources of information.
 
-
+None.
 
 ------------------------------------------------------------------------
 Student 1: What is your assessment of the assignment? Was it helpful?
@@ -66,7 +66,9 @@ Was it fun?
 Student 2: What is your assessment of the assignment? Was it helpful?
 Was it fun?
 
-
+It was interesting, but not the most fun if I am being honest. I learned
+a good bit about c and what it would be like to work with another 
+person's code.
 
 ------------------------------------------------------------------------
 (optional) What information can you provide about your submission that
@@ -104,6 +106,7 @@ your disagreements with them? Copy the splint warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
+None.
 
 
 ------------------------------------------------------------------------
@@ -120,7 +123,7 @@ It is okay to initialize a file node with NULL contents.
    ft.c: line 456: medium priority:
    Do you want to validate 'pvNewContents' through an assert?
 
-It is okay to change a file node contents to be NULL.
+It is okay to change a file node's contents to be NULL.
 
    ft.c: line 642: low priority: 
    A source code file should contain fewer than 500 lines;
