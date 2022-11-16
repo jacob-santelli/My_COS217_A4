@@ -563,7 +563,7 @@ int FT_destroy(void) {
 /*
   Performs a pre-order traversal of the tree rooted at n,
   inserting each payload to DynArray_T d beginning at index i.
-  Returns the next unused index in d after the insertion(s).
+  Returns the total length of all paths in the FT.
 */
 static size_t FT_preOrderTraversal(DynArray_T d, Node_T n, size_t *totalStrLen) {
    size_t c;
