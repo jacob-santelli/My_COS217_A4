@@ -78,12 +78,12 @@ Node_T Node_getParent(Node_T oNNode);
 */
 char *Node_toString(Node_T oNNode);
 
-/* Takes any Node and returns its state (which can either be directory
+/* Takes oNNode and returns its state (which can either be directory
 or file). */
 int Node_getState(Node_T oNNode);
 
-/* Takes a file node and set the value of its file 
-pointer. */
+/* Takes oNNode, a file node, and set the value of its file 
+pointer to a_file. */
 void Node_setFile(Node_T oNNode, void* a_file);
 
 /* Returns a pointer to oNNode's file. */
