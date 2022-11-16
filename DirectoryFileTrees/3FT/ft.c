@@ -322,17 +322,14 @@ int FT_insertFile(const char *pcPath, void *pvContents,
    while(ulIndex <= ulDepth) {
       Path_T oPPrefix = NULL;
       Node_T oNNewNode = NULL;
-
       /* generate a Path_T for this level */
       iStatus = Path_prefix(oPPath, ulIndex, &oPPrefix);
       if(iStatus != SUCCESS) {
          Path_free(oPPath);
          if(oNFirstNew != NULL)
             (void) Node_free(oNFirstNew);
-         /* assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount)); */
          return iStatus;
       }
-
       /* insert the new node for this level, depending on whether it is the final file node */
       if (ulIndex < ulDepth) {
          iStatus = Node_new(oPPrefix, oNCurr, &oNNewNode, DIRECTORY);
@@ -347,10 +344,8 @@ int FT_insertFile(const char *pcPath, void *pvContents,
          Path_free(oPPrefix);
          if(oNFirstNew != NULL)
             (void) Node_free(oNFirstNew);
-         /* assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount)); */
          return iStatus;
       }
-
       /* set up for next level */
       Path_free(oPPrefix);
       oNCurr = oNNewNode;
