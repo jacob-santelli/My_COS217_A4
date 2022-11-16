@@ -25,7 +25,6 @@ struct node {
    size_t size_of_file;
 };
 
-
 /*
   Links new child oNChild into oNParent's children array at index
   ulIndex. Returns SUCCESS if the new child was added successfully,
@@ -61,7 +60,7 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, int state) {
    Path_T oPParentPath = NULL;
    Path_T oPNewPath = NULL;
    size_t ulParentDepth;
-   size_t ulIndex;
+   size_t* ulIndex = 0;
    int iStatus;
 
    assert(oPPath != NULL);
@@ -109,7 +108,7 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, int state) {
       }
 
       /* parent must not already have child with this path */
-      if(Node_hasChild(oNParent, oPPath, &ulIndex)) {
+      if(Node_hasChild(oNParent, oPPath, ulIndex)) {
          Path_free(psNew->oPPath);
          free(psNew);
          *poNResult = NULL;
@@ -139,7 +138,7 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, int state) {
 
    /* Link into parent's children list */
    if(oNParent != NULL) {
-      iStatus = Node_addChild(oNParent, psNew, ulIndex);
+      iStatus = Node_addChild(oNParent, psNew, *ulIndex);
       if(iStatus != SUCCESS) {
          Path_free(psNew->oPPath);
          free(psNew);
