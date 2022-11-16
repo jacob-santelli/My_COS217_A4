@@ -30,14 +30,15 @@ static size_t ulCount;
 
 /* --------------------------------------------------------------------
 
-  Traverses the DT starting at the root as far as possible towards
+  Traverses the FT starting at the root as far as possible towards
   absolute path oPPath. If able to traverse, returns an int SUCCESS
   status and sets *poNFurthest to the furthest node reached (which may
   be only a prefix of oPPath, or even NULL if the root is NULL).
   Otherwise, sets *poNFurthest to NULL and returns with status:
   * CONFLICTING_PATH if the root's path is not a prefix of oPPath
   * MEMORY_ERROR if memory could not be allocated to complete request
-  * NOT_A_DIRECTORY if path contains a file anywhere instead of a directory 
+  * NOT_A_DIRECTORY if path contains a file anywhere instead of a directory
+   (if checkFilesInPath is true)
 */
 static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, enum bool checkFilesInPath) {
    int iStatus;
@@ -491,6 +492,8 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
    Node_T oNFound = NULL;
 
    assert(pcPath != NULL);
+   assert(pbIsFile != NULL);
+   assert(pulSize != NULL);
 
    /* checks for initialization error */
    if(!bIsInitialized) return INITIALIZATION_ERROR;
