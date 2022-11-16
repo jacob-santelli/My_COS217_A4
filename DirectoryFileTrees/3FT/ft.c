@@ -285,6 +285,9 @@ boolean FT_containsDir(const char *pcPath) {
    if (iStatus != SUCCESS)
       return FALSE;
 
+   if (Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
+      return FALSE;
+
    if (Node_getState(oNFound) == DIRECTORY) {
       return (boolean) (iStatus == SUCCESS);
    }
@@ -303,15 +306,15 @@ int FT_rmDir(const char *pcPath) {
    if (!bIsInitialized)
       return INITIALIZATION_ERROR;
 
-   if (oNRoot == NULL)
-      return FALSE;
-
    /* call traverse path to find the last node in pcPath, and then check if that
    is actually a directory */
    iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
 
    if(iStatus != SUCCESS)
        return iStatus;
+
+   if (oNFound == NULL || Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
+      return NO_SUCH_PATH;
 
    if (Node_getState(oNFound) != DIRECTORY) {
       return NOT_A_DIRECTORY;
@@ -442,6 +445,9 @@ boolean FT_containsFile(const char *pcPath) {
    if (iStatus != SUCCESS)
       return FALSE;
 
+   if (Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
+      return FALSE;
+
    if (Node_getState(oNFound) == A_FILE) {
       return (boolean) (iStatus == SUCCESS);
    }
@@ -459,9 +465,6 @@ int FT_rmFile(const char *pcPath) {
    if (!bIsInitialized)
       return INITIALIZATION_ERROR;
 
-   if (oNRoot == NULL)
-      return FALSE;
-
    /* call traverse path to find the last node in pcPath, and then check if that
    is actually a directory */
    iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
@@ -469,8 +472,11 @@ int FT_rmFile(const char *pcPath) {
    if(iStatus != SUCCESS)
        return iStatus;
 
+   if (oNFound == NULL || Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
+      return NO_SUCH_PATH;
+
    if (Node_getState(oNFound) != A_FILE) {
-      return NOT_A_DIRECTORY;
+      return NOT_A_FILE;
    }
 
    ulCount -= Node_free(oNFound);
@@ -492,6 +498,13 @@ void *FT_getFileContents(const char *pcPath) {
       return NULL;
 
    iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
+
+   if(iStatus != SUCCESS)
+       return iStatus;
+
+   if (oNFound == NULL || Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
+      return NO_SUCH_PATH;
+
    if (Node_getState(oNFound) != A_FILE) {
       return NULL;
    }
