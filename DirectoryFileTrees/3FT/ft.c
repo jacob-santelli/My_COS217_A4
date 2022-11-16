@@ -400,6 +400,7 @@ int FT_insertFile(const char *pcPath, void *pvContents,
       else {
          iStatus = Node_new(oPPrefix, oNCurr, &oNNewNode, A_FILE);
          Node_setFile(oNNewNode, pvContents);
+         Node_setFileLength(oNNewNode, ulLength);
       }
       if(iStatus != SUCCESS) {
          Path_free(oPPath);
@@ -569,6 +570,8 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
       return NO_SUCH_PATH;
    }
 
+
+
    /* change booleans depending on if node is directory or Node */
    if (Node_getState(oNFound) == DIRECTORY) {
       *pbIsFile = FALSE;
@@ -576,7 +579,7 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
    else {
       *pbIsFile = TRUE;
       pvTemp = Node_getFile(oNFound);
-      *pulSize = sizeof(*pvTemp);
+      *pulSize = Node_getFileLength(oNFound);
    }
 
    Path_free(oPPath);

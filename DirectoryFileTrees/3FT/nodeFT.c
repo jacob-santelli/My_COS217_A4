@@ -22,6 +22,8 @@ struct node {
    int state;
    /* void pointer to content */
    void* a_file;
+   /* size of file */
+   size_t size_of_file;
 };
 
 
@@ -94,6 +96,7 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, int state) {
    }
    psNew->oPPath = oPNewPath;
    psNew->state = state;
+   psNew->size_of_file = 0;
 
    /* validate and set the new node's parent */
    if(oNParent != NULL) {
@@ -285,4 +288,18 @@ void* Node_getFile(Node_T oNNode) {
    assert(oNNode->state == A_FILE);
 
    return oNNode->a_file;
+}
+
+void Node_setFileLength(Node_T oNNode, size_t ulLength) {
+   assert(oNNode != NULL);
+   assert(oNNode->state == A_FILE);
+
+   oNNode->size_of_file = ulLength;
+}
+
+size_t Node_getFileLength(Node_T oNNode, size_t ulLength) {
+   assert(oNNode != NULL);
+   assert(oNNode->state == A_FILE);
+
+   return oNNode->size_of_file;
 }

@@ -95,4 +95,11 @@ void Node_setFile(Node_T oNNode, void* a_file);
 
 /* returns the pointer to the file contained in oNNode */
 void* Node_getFile(Node_T oNNode);
+
+/* Take a node whose state is A_FILE and set its length to ulLength */
+void Node_setFileLength(Node_T oNNode, size_t ulLength);
+
+/* returns the length of the file contained in oNNode */
+size_t Node_getFileLength(Node_T oNNode, size_t ulLength);
+
 #endif
