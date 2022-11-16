@@ -81,7 +81,8 @@ your disagreements with them? Copy the splint warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
-
+None. (Splint generates warnings for the .c files we did not write,
+but we assume it is not our responsibility to fix those.)
 
 ------------------------------------------------------------------------
 What warnings does critTer generate on checkerDT.c, and what are your
@@ -89,7 +90,13 @@ disagreements with them? Copy the critTer warnings here, and express
 your disagreement after each warning. If there are no warnings, then
 write "None."
 
+checkerDT.c: line 195: low priority: 
+   This function definition probably needs more local comments
 
+Every section has a relevant comment, and this section of the code
+is essentially one-line checks that return a detailed error message —
+we feel like these error messages can already explain what the code
+is doing. 
 
 ------------------------------------------------------------------------
 What warnings does splint generate on your Part 3 code, and what are
@@ -150,9 +157,6 @@ it's very important for the client to know that the ulChildID is an
 index between 0 and the total num of children, not just some random
 hash, for example. Stating the specifics (at least the bounds) of
 ulChildID would be helpful to add in the comments here.
-
-There's a typo in the comment for Node_getParent() that leads to
-confusion.
 
 The two functions Node_getChild() and Node_hasChild() are largely
 redundant and could be consolidated to avoid module bloat. For example,
