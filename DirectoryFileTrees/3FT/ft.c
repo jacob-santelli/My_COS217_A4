@@ -30,21 +30,15 @@ static size_t ulCount;
 
 /* --------------------------------------------------------------------
 
-  The DT_traversePath and DT_findNode functions modularize the common
-  functionality of going as far as possible down an DT towards a path
-  and returning either the node of however far was reached or the
-  node if the full path was reached, respectively.
-*/
-
-/*
-  Traverses the DT starting at the root as far as possible towards
+  Traverses the FT starting at the root as far as possible towards
   absolute path oPPath. If able to traverse, returns an int SUCCESS
   status and sets *poNFurthest to the furthest node reached (which may
   be only a prefix of oPPath, or even NULL if the root is NULL).
   Otherwise, sets *poNFurthest to NULL and returns with status:
   * CONFLICTING_PATH if the root's path is not a prefix of oPPath
   * MEMORY_ERROR if memory could not be allocated to complete request
-  * NOT_A_DIRECTORY if path contains a file anywhere instead of a directory 
+  * NOT_A_DIRECTORY if path contains a file anywhere instead of a 
+    directory (and if checkFilesInPath is TRUE)
 */
 static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, enum bool checkFilesInPath) {
    int iStatus;
@@ -73,6 +67,7 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, enum bool checkFi
       return iStatus;
    }
 
+   /* if the path is not underneath the root */
    if(Path_comparePath(Node_getPath(oNRoot), oPPrefix)) {
       Path_free(oPPrefix);
       *poNFurthest = NULL;
@@ -81,6 +76,7 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, enum bool checkFi
    Path_free(oPPrefix);
    oPPrefix = NULL;
 
+   /* iterates down the absolute path */
    oNCurr = oNRoot;
    ulDepth = Path_getDepth(oPPath);
    for(i = 2; i <= ulDepth; i++) {
@@ -112,60 +108,6 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, enum bool checkFi
 
    Path_free(oPPrefix);
    *poNFurthest = oNCurr;
-   return SUCCESS;
-}
-
-/*
-  Traverses the DT to find a node with absolute path pcPath. Returns a
-  int SUCCESS status and sets *poNResult to be the node, if found.
-  Otherwise, sets *poNResult to NULL and returns with status:
-  * INITIALIZATION_ERROR if the DT is not in an initialized state
-  * BAD_PATH if pcPath does not represent a well-formatted path
-  * CONFLICTING_PATH if the root's path is not a prefix of pcPath
-  * NO_SUCH_PATH if no node with pcPath exists in the hierarchy
-  * MEMORY_ERROR if memory could not be allocated to complete request
- */
-static int FT_findNode(const char *pcPath, Node_T *poNResult) {
-   Path_T oPPath = NULL;
-   Node_T oNFound = NULL;
-   int iStatus;
-
-   assert(pcPath != NULL);
-   assert(poNResult != NULL);
-
-   if(!bIsInitialized) {
-      *poNResult = NULL;
-      return INITIALIZATION_ERROR;
-   }
-
-   iStatus = Path_new(pcPath, &oPPath);
-   if(iStatus != SUCCESS) {
-      *poNResult = NULL;
-      return iStatus;
-   }
-
-   iStatus = FT_traversePath(oPPath, &oNFound, 0);
-   if(iStatus != SUCCESS)
-   {
-      Path_free(oPPath);
-      *poNResult = NULL;
-      return iStatus;
-   }
-
-   if(oNFound == NULL) {
-      Path_free(oPPath);
-      *poNResult = NULL;
-      return NO_SUCH_PATH;
-   }
-
-   if(Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
-      Path_free(oPPath);
-      *poNResult = NULL;
-      return NO_SUCH_PATH;
-   }
-
-   Path_free(oPPath);
-   *poNResult = oNFound;
    return SUCCESS;
 }
 /*--------------------------------------------------------------------*/
@@ -619,13 +561,13 @@ int FT_destroy(void) {
 /* --------------------------------------------------------------------
 
   The following auxiliary functions are used for generating the
-  string representation of the DT.
+  string representation of the FT.
 */
 
 /*
   Performs a pre-order traversal of the tree rooted at n,
-  inserting each payload to DynArray_T d beginning at index i.
-  Returns the next unused index in d after the insertion(s).
+  inserting each payload to DynArray_T d, starting with the files in
+  any given set of children, followed by the child directories.
 */
 static void FT_preOrderTraversal(DynArray_T d, Node_T n) {
    size_t c;
@@ -638,8 +580,10 @@ static void FT_preOrderTraversal(DynArray_T d, Node_T n) {
    count = 0;
    temp = DynArray_new(1);
 
+   /* base case */
    if(n != NULL) {
       (void) DynArray_add(d, n);
+      /* iterate throught the children of node n */
       for(c = 0; c < Node_getNumChildren(n); c++) {
          int iStatus;
          Node_T oNChild = NULL;
