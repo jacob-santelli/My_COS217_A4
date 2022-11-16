@@ -40,7 +40,8 @@ static size_t ulCount;
   * NOT_A_DIRECTORY if path contains a file anywhere instead of a directory
    (if checkFilesInPath is true)
 */
-static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, enum bool checkFilesInPath) {
+static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, 
+      enum bool checkFilesInPath) {
    int iStatus;
    Path_T oPPrefix = NULL;
    Node_T oNCurr;
@@ -58,7 +59,8 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, enum bool checkFi
       return SUCCESS;
    }
  
-   /* set oPPrefix to the value of the root node, make sure that it returns success */
+   /* set oPPrefix to the value of the root node, 
+      make sure that it returns success */
    iStatus = Path_prefix(oPPath, 1, &oPPrefix);
 
    /* checks that there is a value in the root node */
@@ -94,7 +96,8 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, enum bool checkFi
             *poNFurthest = NULL;
             return iStatus;
          }
-         if (checkFilesInPath == TRUE && Node_getState(oNChild) != DIRECTORY) {
+         if (checkFilesInPath == 
+               TRUE && Node_getState(oNChild) != DIRECTORY) {
             return NOT_A_DIRECTORY;
          }
          oNCurr = oNChild;
@@ -150,7 +153,8 @@ int FT_insertDir(const char *pcPath) {
    if(oNCurr == NULL)
       ulIndex = 1;
 
-   /* checks to see if the whole path being inserted is in the tree already */
+   /* checks to see if the whole path being inserted is in 
+      the tree already */
    else {
       ulIndex = Path_getDepth(Node_getPath(oNCurr))+1;
 
@@ -241,14 +245,15 @@ int FT_rmDir(const char *pcPath) {
    if (!bIsInitialized)
       return INITIALIZATION_ERROR;
 
-   /* call traverse path to find the last node in pcPath, and then check if that
-   is actually a directory */
+   /* call traverse path to find the last node in pcPath, and then 
+      check if that is actually a directory */
    iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
 
    if(iStatus != SUCCESS)
        return iStatus;
 
-   if (oNFound == NULL || Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
+   if (oNFound == NULL || 
+         Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
       return NO_SUCH_PATH;
 
    if (Node_getState(oNFound) != DIRECTORY) {
@@ -325,7 +330,8 @@ int FT_insertFile(const char *pcPath, void *pvContents,
             (void) Node_free(oNFirstNew);
          return iStatus;
       }
-      /* insert the new node for this level, depending on whether it is the final file node */
+      /* insert the new node for this level, depending on whether 
+         it is the final file node */
       if (ulIndex < ulDepth) {
          iStatus = Node_new(oPPrefix, oNCurr, &oNNewNode, DIRECTORY);
       }
@@ -377,7 +383,8 @@ boolean FT_containsFile(const char *pcPath) {
    if (iStatus != SUCCESS)
       return FALSE;
 
-   if (oNFound == NULL || Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
+   if (oNFound == NULL || 
+         Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
       return FALSE;
 
    if (Node_getState(oNFound) == A_FILE) {
@@ -397,14 +404,15 @@ int FT_rmFile(const char *pcPath) {
    if (!bIsInitialized)
       return INITIALIZATION_ERROR;
 
-   /* call traverse path to find the last node in pcPath, and then check if that
-   is actually a directory */
+   /* call traverse path to find the last node in pcPath, and 
+   then check if that is actually a directory */
    iStatus = FT_traversePath(oPPath, &oNFound, FALSE);
 
    if(iStatus != SUCCESS)
        return iStatus;
 
-   if (oNFound == NULL || Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
+   if (oNFound == NULL || 
+         Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
       return NO_SUCH_PATH;
 
    if (Node_getState(oNFound) != A_FILE) {
@@ -434,7 +442,8 @@ void *FT_getFileContents(const char *pcPath) {
    if(iStatus != SUCCESS)
        return NULL;
 
-   if (oNFound == NULL || Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
+   if (oNFound == NULL || 
+         Path_comparePath(Node_getPath(oNFound), oPPath) != 0)
       return NULL;
 
    if (Node_getState(oNFound) != A_FILE) {
@@ -461,7 +470,8 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
       Path_free(oPPath);
       return NULL;
    }
-   if(oNFound == NULL || Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
+   if(oNFound == NULL || 
+         Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
       Path_free(oPPath);
       return NULL;
    }
@@ -500,7 +510,8 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
    /* checks for no such path and conflicting path */
    iStatus = FT_traversePath(oPPath, &oNFound, 0);
    if (iStatus == CONFLICTING_PATH) return CONFLICTING_PATH;
-   if(oNFound == NULL || Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
+   if(oNFound == NULL || 
+         Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
       Path_free(oPPath);
       return NO_SUCH_PATH;
    }
@@ -553,14 +564,16 @@ int FT_destroy(void) {
 /*
   Performs a pre-order traversal of the tree rooted at n,
   inserting each payload to DynArray_T d beginning at index i.
-  Returns the total length of all paths in the FT.
+  Returns the total length of all paths in the FT as totalStrLen.
 */
-static size_t FT_preOrderTraversal(DynArray_T d, Node_T n, size_t *totalStrLen) {
+static size_t FT_preOrderTraversal(DynArray_T d, Node_T n, 
+      size_t *totalStrLen) {
    size_t c;
    size_t j;
    DynArray_T temp;
 
    assert(d != NULL);
+   assert(totalStrLen != NULL);
 
    temp = DynArray_new(1);
 
@@ -574,14 +587,16 @@ static size_t FT_preOrderTraversal(DynArray_T d, Node_T n, size_t *totalStrLen) 
 
          if (Node_getState(oNChild) == A_FILE) {
             (void) DynArray_add(d, oNChild);
-            *totalStrLen += (Path_getStrLength(Node_getPath(oNChild)) + 1);
+            *totalStrLen += 
+               (Path_getStrLength(Node_getPath(oNChild)) + 1);
          }
          else {
             (void) DynArray_add(temp, oNChild);
          }
       }
       for (j = 0; j< DynArray_getLength(temp); j++) {
-         (void) FT_preOrderTraversal(d, DynArray_get(temp, j), totalStrLen);
+         (void) FT_preOrderTraversal(d, DynArray_get(temp, j), 
+            totalStrLen);
       }
    }
    return *totalStrLen;
