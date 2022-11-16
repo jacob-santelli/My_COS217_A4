@@ -565,7 +565,7 @@ int FT_destroy(void) {
   inserting each payload to DynArray_T d beginning at index i.
   Returns the next unused index in d after the insertion(s).
 */
-static void FT_preOrderTraversal(DynArray_T d, Node_T n) {
+static size_t FT_preOrderTraversal(DynArray_T d, Node_T n, size_t *totalStrLen) {
    size_t c;
    size_t j;
    DynArray_T temp;
@@ -576,34 +576,25 @@ static void FT_preOrderTraversal(DynArray_T d, Node_T n) {
 
    if(n != NULL) {
       (void) DynArray_add(d, n);
+      *totalStrLen += (Path_getStrLength(Node_getPath(n)) + 1);
+
       for(c = 0; c < Node_getNumChildren(n); c++) {
          Node_T oNChild = NULL;
          assert(!Node_getChild(n,c, &oNChild));
 
          if (Node_getState(oNChild) == A_FILE) {
             (void) DynArray_add(d, oNChild);
+            *totalStrLen += (Path_getStrLength(Node_getPath(oNChild)) + 1);
          }
          else {
             (void) DynArray_add(temp, oNChild);
          }
-         /* assert(iStatus == SUCCESS); */
       }
       for (j = 0; j< DynArray_getLength(temp); j++) {
-         (void) FT_preOrderTraversal(d, DynArray_get(temp, j));
+         (void) FT_preOrderTraversal(d, DynArray_get(temp, j), totalStrLen);
       }
    }
-}
-
-/*
-  Alternate version of strlen that uses pulAcc as an in-out parameter
-  to accumulate a string length, rather than returning the length of
-  oNNode's path, and also always adds one addition byte to the sum.
-*/
-static void FT_strlenAccumulate(Node_T oNNode, size_t *pulAcc) {
-   assert(pulAcc != NULL);
-
-   if(oNNode != NULL)
-      *pulAcc += (Path_getStrLength(Node_getPath(oNNode)) + 1);
+   return *totalStrLen;
 }
 
 /*
@@ -629,13 +620,9 @@ char *FT_toString(void) {
    if(!bIsInitialized)
       return NULL;
 
-   nodes = DynArray_new(ulCount);  
-   (void) FT_preOrderTraversal(nodes, oNRoot);
+   nodes = DynArray_new(ulCount); 
 
-   DynArray_map(nodes, (void (*)(void *, void*)) FT_strlenAccumulate,
-                (void*) &totalStrlen);
-
-   result = malloc(totalStrlen);
+   result = malloc(FT_preOrderTraversal(nodes, oNRoot, &totalStrlen));
    if(result == NULL) {
       DynArray_free(nodes);
       return NULL;
