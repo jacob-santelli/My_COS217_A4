@@ -30,13 +30,6 @@ static size_t ulCount;
 
 /* --------------------------------------------------------------------
 
-  The DT_traversePath and DT_findNode functions modularize the common
-  functionality of going as far as possible down an DT towards a path
-  and returning either the node of however far was reached or the
-  node if the full path was reached, respectively.
-*/
-
-/*
   Traverses the DT starting at the root as far as possible towards
   absolute path oPPath. If able to traverse, returns an int SUCCESS
   status and sets *poNFurthest to the furthest node reached (which may
