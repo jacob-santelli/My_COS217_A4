@@ -115,6 +115,102 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest, enum bool checkFi
    return SUCCESS;
 }
 
+int FT_insertDir(const char *pcPath) { 
+   int iStatus;
+   Path_T oPPath = NULL;
+   Node_T oNFirstNew = NULL;
+   Node_T oNCurr = NULL;
+   size_t ulDepth, ulIndex;
+   size_t ulNewNodes = 0;
+
+   assert(pcPath != NULL);
+
+   /* validate pcPath and generate a Path_T for it */
+   if(!bIsInitialized)
+      return INITIALIZATION_ERROR;
+
+   iStatus = Path_new(pcPath, &oPPath);
+   if(iStatus != SUCCESS)
+      return iStatus;
+
+   /* find the closest ancestor of oPPath already in the tree */
+   iStatus= FT_traversePath(oPPath, &oNCurr, TRUE);
+   if(iStatus != SUCCESS)
+   {
+      Path_free(oPPath);
+      return iStatus;
+   }
+
+   /* no ancestor node found, so if root is not NULL,
+      pcPath isn't underneath root. */
+   if(oNCurr == NULL && oNRoot != NULL) {
+      Path_free(oPPath);
+      return CONFLICTING_PATH;
+   }
+
+   ulDepth = Path_getDepth(oPPath);
+   /* only possible if root is in fact NULL, in which case the first
+   Node is being added to the tree */
+   if(oNCurr == NULL)
+      ulIndex = 1;
+
+   /* checks to see if the whole path being inserted is in the tree already */
+   else {
+      ulIndex = Path_getDepth(Node_getPath(oNCurr))+1;
+
+      /* oNCurr is the node with the longest shared prefix with the
+      path that we are trying to insert */
+      if(ulIndex == ulDepth+1 && !Path_comparePath(oPPath,
+                                       Node_getPath(oNCurr))) {
+         Path_free(oPPath);
+         return ALREADY_IN_TREE;
+      }
+   }
+
+   /* starting at oNCurr, build rest of the path one level at a time */
+   while(ulIndex <= ulDepth) {
+      Path_T oPPrefix = NULL;
+      Node_T oNNewNode = NULL;
+
+      /* generate a Path_T for this level */
+      iStatus = Path_prefix(oPPath, ulIndex, &oPPrefix);
+      if(iStatus != SUCCESS) {
+         Path_free(oPPath);
+         if(oNFirstNew != NULL)
+            (void) Node_free(oNFirstNew);
+         /* _isValid(bIsInitialized, oNRoot, ulCount)); */
+         return iStatus;
+      }
+
+      /* insert the new node for this level */
+      iStatus = Node_new(oPPrefix, oNCurr, &oNNewNode, DIRECTORY);
+      if(iStatus != SUCCESS) {
+         Path_free(oPPath);
+         Path_free(oPPrefix);
+         if(oNFirstNew != NULL)
+            (void) Node_free(oNFirstNew);
+         /* assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount)); */
+         return iStatus;
+      }
+
+      /* set up for next level */
+      Path_free(oPPrefix);
+      oNCurr = oNNewNode;
+      ulNewNodes++;
+      if(oNFirstNew == NULL)
+         oNFirstNew = oNCurr;
+      ulIndex++;
+   }
+
+   Path_free(oPPath);
+   /* update DT state variables to reflect insertion */
+   if(oNRoot == NULL)
+      oNRoot = oNFirstNew;
+   ulCount += ulNewNodes;
+
+   return SUCCESS;
+}
+
 boolean FT_containsDir(const char *pcPath) {
    int iStatus;
    Node_T oNFound = NULL;
