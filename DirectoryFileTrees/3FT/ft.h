@@ -148,5 +148,5 @@ int FT_destroy(void);
   which is then owned by client!
 */
 char *FT_toString(void);
-
+ 
 #endif
