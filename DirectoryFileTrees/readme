@@ -104,7 +104,7 @@ your disagreements with them? Copy the splint warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
-
+None.
 
 ------------------------------------------------------------------------
 What warnings does critTer generate on your Part 3 code, and what are
@@ -112,7 +112,21 @@ your disagreements with them? Copy the critTer warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
+nodeFT.c: line 286: low priority: 
+   A file should contain no more than 15 functions;
+   this file contains 16 functions
 
+Although nodeFT.c contains more than 15 functions, we felt this was
+justified, since each function does one specific thing. We could 
+have re-appropriated setFile() and getFile() into the same function,
+for example, but we felt that having two separate functions for these
+two separate actions was more clear. 
+
+nodeFT.c: line 261: medium priority:
+   Do you want to validate 'a_file' through an assert?
+
+No, we don't, because a_file will sometimes be a NULL pointer by design, 
+and that's fine — we will check before dereferencing it. 
 
 ------------------------------------------------------------------------
 For each of the five faulty BDT implementations required by Step
