@@ -112,6 +112,23 @@ your disagreements with them? Copy the critTer warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
+   ft.c: line 271: medium priority:
+   Do you want to validate 'pvContents' through an assert?
+
+It is okay to initialize a file node with NULL contents.
+
+   ft.c: line 456: medium priority:
+   Do you want to validate 'pvNewContents' through an assert?
+
+It is okay to change a file node contents to be NULL.
+
+   ft.c: line 642: low priority: 
+   A source code file should contain fewer than 500 lines;
+   this file contains 643 lines
+
+Ft.c has a sufficient level of encapsulation to justify keeping all of
+functions in a single module.
+
 
 
 ------------------------------------------------------------------------
